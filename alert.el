@@ -278,7 +278,7 @@ bound and non-nil.
 
 When formatting is performed, ARGS are treated as for `message', including
 a format-string.  When formatting is not performed, only the first element
-of ARGS is respected.  It should be a preformatted string."
+of ARGS is respected.  It should be a pre-formatted string."
     (if (and (boundp 'alert-message-preformatted)
              alert-message-preformatted)
         (apply 'alert-message-noformat args)
@@ -287,7 +287,7 @@ of ARGS is respected.  It should be a preformatted string."
 
 ;;;###autoload
 (defun alert-message-noformat (content &rest args)
-  "An alternative for `message' which assumes a preformatted CONTENT string.
+  "An alternative for `message' which assumes a pre-formatted CONTENT string.
 
 ARGS are ignored, meaning this is not functionally equivalent to `message'.
 However, flet'ing `message' to this function is safe in the sense that
@@ -375,7 +375,7 @@ ARGS are as for `message', including a format-string."
 (defun alert-message--insert-1 (msg)
   "Internal driver for `alert-message-insert'.
 
-Inserts preformatted MSG at the current position with line feeds as needed."
+Inserts pre-formatted MSG at the current position with line feeds as needed."
   (unless (eq (line-beginning-position) (point))
     (insert "\n"))
   (insert msg)
@@ -386,7 +386,7 @@ Inserts preformatted MSG at the current position with line feeds as needed."
 (defun alert-message-popup (&rest args)
   "An flet'able replacement for `message' which uses popups instead of echoing.
 
-The functions `popup-volatile' and `popup' are attempteded in
+The functions `popup-volatile' and `popup' are attempted in
 order to create a popup.  If both functions fail, the message
 content will appear in the echo area as usual.
 
@@ -469,8 +469,8 @@ The following aliases will be installed:
 ;; coding: utf-8
 ;; End:
 ;;
-;; LocalWords:
+;; LocalWords: noformat logonly nolog flet'able NOCOLOR nocolor fsets
+;; LocalWords: flet todochiku ARGS args callf
 ;;
-
 
 ;;; alert.el ends here

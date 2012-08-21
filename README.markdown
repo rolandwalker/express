@@ -1,5 +1,5 @@
 Overview
-=====
+========
 
 Alternatives to Emacs "message"
 
@@ -71,7 +71,6 @@ The following forms using `message` and `alert` are equivalent:
 
 	(message "hello, %s" name)
 	(alert (format "hello, %s" name) 'quiet 0 'nocolor 'log)
-
 
 message alternatives
 --------------------
