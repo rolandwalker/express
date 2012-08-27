@@ -319,9 +319,9 @@ ARGS are as for `message', including a format-string."
           (save-excursion
             (goto-char (point-max))
             (let ((msg (if (and (boundp 'alert-message-preformatted)
-                                              alert-message-preformatted)
-                                         (car args)
-                                       (apply 'format args))))
+                                alert-message-preformatted)
+                           (car args)
+                         (apply 'format args))))
               (alert--message-insert-1 msg)
               msg)))
       ;; else
