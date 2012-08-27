@@ -322,7 +322,7 @@ ARGS are as for `message', including a format-string."
                                               alert-message-preformatted)
                                          (car args)
                                        (apply 'format args))))
-              (alert-message--insert-1 msg)
+              (alert--message-insert-1 msg)
               msg)))
       ;; else
       (let ((current-msg (current-message))
@@ -369,10 +369,10 @@ ARGS are as for `message', including a format-string."
   (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args)))
         (alert-message-preformatted t))
     (alert-message-logonly msg)
-    (alert-message--insert-1 msg)
+    (alert--message-insert-1 msg)
     msg))
 
-(defun alert-message--insert-1 (msg)
+(defun alert--message-insert-1 (msg)
   "Internal driver for `alert-message-insert'.
 
 Inserts pre-formatted MSG at the current position with line feeds as needed."
