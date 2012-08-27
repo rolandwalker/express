@@ -271,7 +271,7 @@ The following forms using `message` and `alert` are equivalent:
   content)
 
 (defun alert-message-maybe-formatted (&rest args)
-  "Dispatch `message' ac coring to the variable `alert-message-preformatted'.
+  "Dispatch `message' according to the variable `alert-message-preformatted'.
 
 Formatting is not performed if `alert-message-preformatted' is
 bound and non-nil.
