@@ -325,9 +325,9 @@ ARGS are as for `message', including a format-string."
               (alert--message-insert-1 msg)
               msg)))
       ;; else
-      (let ((current-msg (current-message))
-            (apply 'alert-message-maybe-formatted args)
-            (alert-message current-msg))))))
+      (let ((current-msg (current-message)))
+        (apply 'alert-message-maybe-formatted args)
+        (alert-message current-msg)))))
 
 ;;;###autoload
 (defun alert-message-highlight (&rest args)
