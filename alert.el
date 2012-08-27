@@ -4,8 +4,8 @@
 ;;
 ;; Author: Roland Walker walker@pobox.com
 ;; URL: https://github.com/rolandwalker/alert.el
-;; Version: 0.5.2
-;; Last-Updated: 20 Aug 2012
+;; Version: 0.5.3
+;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: Alert
 ;; Keywords: message, interface
 ;; Package-Requires: ((string-utils "0.0.2"))
@@ -152,7 +152,7 @@
 ;;;###autoload
 (defgroup alert nil
   "Alternatives to `message'."
-  :version "0.5.2"
+  :version "0.5.3"
   :link '(emacs-commentary-link "alert")
   :prefix "alert-"
   :group 'extensions)
