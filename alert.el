@@ -144,6 +144,9 @@
 
 (require 'string-utils nil t)
 
+(declare-function string-utils-propertize-fillin "string-utils.el")
+(declare-function alert-message                  "alert.el")
+
 ;;; customizable variables
 
 ;;;###autoload
