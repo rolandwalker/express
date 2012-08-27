@@ -8,6 +8,7 @@
 ;; Last-Updated: 20 Aug 2012
 ;; EmacsWiki: Alert
 ;; Keywords: message, interface
+;; Package-Requires: ((string-utils "0.0.2"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -141,6 +142,8 @@
 (autoload 'popup-tip         "popup"          "Show a tooltip of STRING at POINT.")
 (autoload 'popup-volatile    "popup-volatile" "Create a volatile tooltip using `popup-tip'.")
 
+(require 'string-utils nil t)
+
 ;;; customizable variables
 
 ;;;###autoload
@@ -171,8 +174,8 @@
 
 ;;; compatibility functions
 
-(unless (fboundp 'propertize-fillin)
-  (defun propertize-fillin (str-val &rest properties)
+(unless (fboundp 'string-utils-propertize-fillin)
+  (defun string-utils-propertize-fillin (str-val &rest properties)
     "Return a copy of STRING with text properties added, without overriding.
 
 Works exactly like `propertize', except that (character-by-character)
@@ -262,8 +265,8 @@ The following forms using `message` and `alert` are equivalent:
         (callf2 format "%s" content))
       (unless nocolor
         (callf concat colored-content (propertize " " 'display '(space :align-to right-margin)))
-        (callf propertize-fillin colored-content 'face (append (face-attr-construct 'default)
-                                                               (face-attr-construct alert-face))))
+        (callf string-utils-propertize-fillin colored-content 'face (append (face-attr-construct 'default)
+                                                                            (face-attr-construct alert-face))))
       (if (and (numberp alert-message-seconds)
                (> alert-message-seconds 0))
           (alert-message-temp colored-content)
@@ -340,8 +343,8 @@ ARGS are as for `message', including a format-string."
   (let ((retval (apply 'alert-message-logonly args)))
     (when (stringp (car args))
       (callf concat (car args) (propertize " " 'display '(space :align-to right-margin)))
-      (callf propertize-fillin (car args) 'face (append (face-attr-construct 'default)
-                                                        (face-attr-construct alert-face))))
+      (callf string-utils-propertize-fillin (car args) 'face (append (face-attr-construct 'default)
+                                                                     (face-attr-construct alert-face))))
     (let ((message-log-max nil))
       (apply 'alert-message-maybe-formatted args))
     retval))
