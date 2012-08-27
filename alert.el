@@ -81,9 +81,12 @@
 ;;    degrade to an ordinary message if the external library is not
 ;;    present.
 ;;
-;; Compatibility
+;; Compatibility and Requirements
 ;;
 ;;    Tested only on GNU Emacs version 24.1
+;;
+;;    Uses if present: string-utils.el, notify.el, todochiku.el,
+;;                     popup.el
 ;;
 ;; Bugs
 ;;

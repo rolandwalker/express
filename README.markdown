@@ -121,3 +121,10 @@ Some of the functions require the availability of notify.el,
 todochiku.el or popup.el.  In all cases, the function will
 degrade to an ordinary message if the external library is not
 present.
+
+Compatibility and Requirements
+------------------------------
+Tested only on GNU Emacs version 24.1
+
+Uses if present: string-utils.el, notify.el, todochiku.el,
+popup.el
