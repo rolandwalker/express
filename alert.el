@@ -7,7 +7,7 @@
 ;; Version: 0.5.3
 ;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: Alert
-;; Keywords: message, interface
+;; Keywords: extensions, message, interface
 ;; Package-Requires: ((string-utils "0.0.2"))
 ;;
 ;; Simplified BSD License
