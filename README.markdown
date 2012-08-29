@@ -126,5 +126,5 @@ Compatibility and Requirements
 ------------------------------
 Tested only on GNU Emacs version 24.1
 
-Uses if present: string-utils.el, notify.el, todochiku.el,
-popup.el
+Uses if present: [string-utils.el](http://github.com/rolandwalker/string-utils), [notify.el](http://emacswiki.org/emacs/notify.el), [todochiku.el](http://www.emacswiki.org/emacs/ToDoChiKu),
+[popup.el](http://github.com/auto-complete/popup-el)
