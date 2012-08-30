@@ -3,7 +3,8 @@
 ;; Copyright (c) 2012 Roland Walker
 ;;
 ;; Author: Roland Walker walker@pobox.com
-;; URL: https://github.com/rolandwalker/alert.el
+;; Homepage: http://github.com/rolandwalker/alert
+;; URL: http://raw.github.com/rolandwalker/alert/master/alert.el
 ;; Version: 0.5.3
 ;; Last-Updated: 27 Aug 2012
 ;; EmacsWiki: Alert
