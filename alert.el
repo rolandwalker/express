@@ -441,7 +441,7 @@ ARGS are as for `message', including a format-string."
            (error nil
                 (alert-message-nolog msg)))))))
 
-;;; interactive functions
+;;; interactive commands
 
 ;;;###autoload
 (defun alert-install-aliases ()
