@@ -1,16 +1,24 @@
 Overview
 ========
 
-Alternatives to Emacs "message"
+Alternatives to Emacs "message".
+
+Quickstart
+----------
+
+    (require 'alert)
+    (alert "important message")
+
+alert
+-----
 
 Alert.el provides alternatives to Emacs' built-in `message` function.
+
 This library is generally only useful when programming in Emacs Lisp.
 However, some end-users may find it useful to control messaging,
 especially for the case of quietening chatty libraries in their
 ~/.emacs files (see "message alternatives" section below).
 
-alert
------
 The principal `alert` function by default works differently from
 `message` in almost every respect.
 
@@ -23,7 +31,7 @@ the *behavior* of `message`.
 string, followed by a number of optional arguments to control
 its behavior.  The full argument spec is:
 
-	content &optional quiet seconds nocolor log notify popup
+	CONTENT &optional QUIET SECONDS NOCOLOR LOG NOTIFY POPUP
 
 `Alert` transiently and noticeably displays CONTENT in the echo area.
 
@@ -74,6 +82,7 @@ The following forms using `message` and `alert` are equivalent:
 
 message alternatives
 --------------------
+
 The following functions provided by this library are drop-in
 alternatives to `message`:
 
@@ -110,6 +119,7 @@ form:
 
 Notes
 -----
+
 The function `alert-install-aliases` provides shorter aliases
 for the message alternative functions, outside of the `alert-`
 namespace.

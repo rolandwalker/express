@@ -15,11 +15,20 @@
 ;;
 ;;; Commentary:
 ;;
+;; Quickstart
+;;
+;;    (require 'alert)
+;;    (alert "important message")
+;;
+;; Explanation
+;;
 ;; Alert.el provides alternatives to Emacs' built-in `message'
-;; function.  This library is generally only useful when programming
-;; in Emacs Lisp.  However, some end-users may find it useful to
-;; control messaging, especially for the case of quietening chatty
-;; libraries in their ~/.emacs files (see below).
+;; function.
+;;
+;; This library is generally only useful when programming in Emacs
+;; Lisp.  However, some end-users may find it useful to control
+;; messaging, especially for the case of quietening chatty libraries
+;; in their ~/.emacs files (see below).
 ;;
 ;; The principal `alert' function by default works differently from
 ;; `message' in almost every respect, displaying with sound and
@@ -29,13 +38,13 @@
 ;; The following functions provided by this library are drop-in
 ;; alternatives to `message':
 ;;
-;;    alert-message-nolog
-;;    alert-message-logonly
-;;    alert-message-highlight
-;;    alert-message-insert
-;;    alert-message-notify
-;;    alert-message-popup
-;;    alert-message-temp
+;;    `alert-message-nolog'
+;;    `alert-message-logonly'
+;;    `alert-message-highlight'
+;;    `alert-message-insert'
+;;    `alert-message-notify'
+;;    `alert-message-popup'
+;;    `alert-message-temp'
 ;;
 ;; which may be useful in an `flet' construct to control messaging.
 ;; For example, the following code would redirect messages from a very
