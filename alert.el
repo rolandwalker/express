@@ -251,6 +251,11 @@ The following forms using `message` and `alert` are equivalent:
         (message-log-max message-log-max)
         (colored-content content)
         (alert-message-preformatted t))
+    (unless (or quiet
+                (eq log 'log-only)
+                (eq notify 'replace-echo)
+                (eq popup 'replace-echo))
+      (ding t))
     (when log
       (alert-message-logonly content))
     (when notify
@@ -263,8 +268,6 @@ The following forms using `message` and `alert` are equivalent:
        (setq alert-message-seconds seconds))
       ((not (null seconds))
        (setq alert-message-seconds 0)))
-    (unless (or quiet (eq log 'log-only))
-      (ding t))
     (unless (or (eq log 'log-only)
                 (eq notify 'replace-echo)
                 (eq popup 'replace-echo))
