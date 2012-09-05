@@ -124,7 +124,8 @@ present.
 
 Compatibility and Requirements
 ------------------------------
-Tested only on GNU Emacs version 24.1
+
+Tested on GNU Emacs versions 23.3 and 24.1
 
 Uses if present: [string-utils.el](http://github.com/rolandwalker/string-utils), [notify.el](http://emacswiki.org/emacs/notify.el), [todochiku.el](http://www.emacswiki.org/emacs/ToDoChiKu),
 [popup.el](http://github.com/auto-complete/popup-el)
