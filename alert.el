@@ -146,9 +146,8 @@
 
 ;;; requires
 
-;; for callf
-(eval-when-compile
-  (require 'cl))
+;; for callf, callf2, assert
+(require 'cl)
 
 (autoload 'notify            "notify"         "Notify TITLE, BODY via `notify-method'.")
 (autoload 'todochiku-message "todochiku"      "Send a message via growl, snarl, etc.")
@@ -489,6 +488,7 @@ The following aliases will be installed:
 ;; mangle-whitespace: t
 ;; require-final-newline: t
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions)
 ;; End:
 ;;
 ;; LocalWords: noformat logonly nolog flet'able NOCOLOR nocolor fsets
