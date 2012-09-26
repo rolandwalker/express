@@ -206,6 +206,167 @@ already existing properties are respected."
 ;;; utility functions
 
 ;;;###autoload
+(defun alert-message-noformat (content &rest args)
+  "An alternative for `message' which assumes a pre-formatted CONTENT string.
+
+ARGS are ignored, meaning this is not functionally equivalent to `message'.
+However, flet'ing `message' to this function is safe in the sense that
+it does not call `message' directly."
+  (if (null content)
+      (alert-message content)
+    ;; else
+    (assert (stringp content) nil "CONTENT must be a string")
+    (alert-message (replace-regexp-in-string "%" "%%" content))))
+
+(defun alert-message-maybe-formatted (&rest args)
+  "Dispatch `message' according to the variable `alert-message-preformatted'.
+
+Formatting is not performed if `alert-message-preformatted' is
+bound and non-nil.
+
+When formatting is performed, ARGS are treated as for `message', including
+a format-string.  When formatting is not performed, only the first element
+of ARGS is respected.  It should be a pre-formatted string."
+    (if (and (boundp 'alert-message-preformatted)
+             alert-message-preformatted)
+        (apply 'alert-message-noformat args)
+      ;; else
+      (apply 'alert-message args)))
+
+(defun alert--message-insert-1 (msg)
+  "Internal driver for `alert-message-insert'.
+
+Inserts pre-formatted MSG at the current position with line feeds as needed."
+  (unless (eq (line-beginning-position) (point))
+    (insert "\n"))
+  (insert msg)
+  (unless (eq (line-beginning-position) (point))
+    (insert "\n")))
+
+;;;###autoload
+(defun alert-message-logonly (&rest args)
+  "An flet'able replacement for `message' which logs but does not echo.
+
+ARGS are as for `message', including a format-string."
+  (when message-log-max
+    (if (get-buffer "*Messages*")
+        ;; don't worry about truncating the message log, some standard
+        ;; call to `message' will catch up with it later.
+        (with-current-buffer "*Messages*"
+          (save-excursion
+            (goto-char (point-max))
+            (let ((msg (if (and (boundp 'alert-message-preformatted)
+                                alert-message-preformatted)
+                           (car args)
+                         (apply 'format args))))
+              (alert--message-insert-1 msg)
+              msg)))
+      ;; else
+      (let ((current-msg (current-message)))
+        (apply 'alert-message-maybe-formatted args)
+        (alert-message current-msg)))))
+
+;;;###autoload
+(defun alert-message-insert (&rest args)
+  "An flet'able replacement for `message' which inserts text instead of echoing.
+
+ARGS are as for `message', including a format-string."
+  (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args)))
+        (alert-message-preformatted t))
+    (alert-message-logonly msg)
+    (alert--message-insert-1 msg)
+    msg))
+
+;;;###autoload
+(defun alert-message-nolog (&rest args)
+  "An flet'able replacement for `message' which echos but does not log.
+
+ARGS are as for `message', including a format-string."
+  (let ((message-log-max nil))
+    (apply 'alert-message-maybe-formatted args)))
+
+;;;###autoload
+(defun alert-message-temp (&rest args)
+  "An flet'able replacement for `message' which displays temporarily.
+
+The display time is governed by `alert-message-seconds'.
+
+ARGS are as for `message', including a format-string."
+  (when (car args)
+    (let ((current-msg (current-message))
+          (retval (apply 'alert-message-maybe-formatted args)))
+      (when (numberp alert-message-seconds)
+        (sit-for alert-message-seconds))
+      (alert-message (or current-msg ""))
+      retval)))
+
+;;;###autoload
+(defun alert-message-popup (&rest args)
+  "An flet'able replacement for `message' which uses popups instead of echoing.
+
+The functions `popup-volatile' and `popup' are attempted in
+order to create a popup.  If both functions fail, the message
+content will appear in the echo area as usual.
+
+ARGS are as for `message', including a format-string."
+  (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args)))
+        (alert-message-preformatted t))
+    (alert-message-logonly msg)
+    (condition-case nil
+        (progn
+          (popup-volatile msg)
+          msg)
+      (error nil
+         (condition-case nil
+             (progn
+               (popup-tip msg)
+               msg)
+           (error nil
+                (alert-message-nolog msg)))))))
+
+;;;###autoload
+(defun alert-message-notify (&rest args)
+  "An flet'able replacement for `message' which uses notifications instead echo.
+
+The following functions are attempted in order call system
+notifications: `notify' and `todochiku-message'.  If both
+functions fail, the message content will appear in the echo
+area as usual.
+
+ARGS are as for `message', including a format-string."
+  (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args)))
+        (alert-message-preformatted t))
+    (alert-message-logonly msg)
+    (condition-case nil
+        (progn
+          (notify alert-message-notify-title msg)
+          msg)
+      (error nil
+         (condition-case nil
+             (progn
+               (todochiku-message alert-message-notify-title msg "")
+               msg)
+           (error nil
+                (alert-message-nolog msg)))))))
+
+;;;###autoload
+(defun alert-message-highlight (&rest args)
+  "An flet'able replacement for `message' which echos highlighted text.
+
+Text without added properties is logged to the messages buffer as
+usual.
+
+ARGS are as for `message', including a format-string."
+  (let ((retval (apply 'alert-message-logonly args)))
+    (when (stringp (car args))
+      (callf concat (car args) (propertize " " 'display '(space :align-to right-margin)))
+      (callf string-utils-propertize-fillin (car args) 'face (append (face-attr-construct 'default)
+                                                                     (face-attr-construct alert-face))))
+    (let ((message-log-max nil))
+      (apply 'alert-message-maybe-formatted args))
+    retval))
+
+;;;###autoload
 (defun alert (content &optional quiet seconds nocolor log notify popup)
   "Transiently and noticeably display CONTENT in the echo area.
 
@@ -290,167 +451,6 @@ The following forms using `message` and `alert` are equivalent:
           (alert-message-temp colored-content)
         (alert-message-noformat colored-content))))
   content)
-
-(defun alert-message-maybe-formatted (&rest args)
-  "Dispatch `message' according to the variable `alert-message-preformatted'.
-
-Formatting is not performed if `alert-message-preformatted' is
-bound and non-nil.
-
-When formatting is performed, ARGS are treated as for `message', including
-a format-string.  When formatting is not performed, only the first element
-of ARGS is respected.  It should be a pre-formatted string."
-    (if (and (boundp 'alert-message-preformatted)
-             alert-message-preformatted)
-        (apply 'alert-message-noformat args)
-      ;; else
-      (apply 'alert-message args)))
-
-;;;###autoload
-(defun alert-message-noformat (content &rest args)
-  "An alternative for `message' which assumes a pre-formatted CONTENT string.
-
-ARGS are ignored, meaning this is not functionally equivalent to `message'.
-However, flet'ing `message' to this function is safe in the sense that
-it does not call `message' directly."
-  (if (null content)
-      (alert-message content)
-    ;; else
-    (assert (stringp content) nil "CONTENT must be a string")
-    (alert-message (replace-regexp-in-string "%" "%%" content))))
-
-;;;###autoload
-(defun alert-message-nolog (&rest args)
-  "An flet'able replacement for `message' which echos but does not log.
-
-ARGS are as for `message', including a format-string."
-  (let ((message-log-max nil))
-    (apply 'alert-message-maybe-formatted args)))
-
-;;;###autoload
-(defun alert-message-logonly (&rest args)
-  "An flet'able replacement for `message' which logs but does not echo.
-
-ARGS are as for `message', including a format-string."
-  (when message-log-max
-    (if (get-buffer "*Messages*")
-        ;; don't worry about truncating the message log, some standard
-        ;; call to `message' will catch up with it later.
-        (with-current-buffer "*Messages*"
-          (save-excursion
-            (goto-char (point-max))
-            (let ((msg (if (and (boundp 'alert-message-preformatted)
-                                alert-message-preformatted)
-                           (car args)
-                         (apply 'format args))))
-              (alert--message-insert-1 msg)
-              msg)))
-      ;; else
-      (let ((current-msg (current-message)))
-        (apply 'alert-message-maybe-formatted args)
-        (alert-message current-msg)))))
-
-;;;###autoload
-(defun alert-message-highlight (&rest args)
-  "An flet'able replacement for `message' which echos highlighted text.
-
-Text without added properties is logged to the messages buffer as
-usual.
-
-ARGS are as for `message', including a format-string."
-  (let ((retval (apply 'alert-message-logonly args)))
-    (when (stringp (car args))
-      (callf concat (car args) (propertize " " 'display '(space :align-to right-margin)))
-      (callf string-utils-propertize-fillin (car args) 'face (append (face-attr-construct 'default)
-                                                                     (face-attr-construct alert-face))))
-    (let ((message-log-max nil))
-      (apply 'alert-message-maybe-formatted args))
-    retval))
-
-;;;###autoload
-(defun alert-message-temp (&rest args)
-  "An flet'able replacement for `message' which displays temporarily.
-
-The display time is governed by `alert-message-seconds'.
-
-ARGS are as for `message', including a format-string."
-  (when (car args)
-    (let ((current-msg (current-message))
-          (retval (apply 'alert-message-maybe-formatted args)))
-      (when (numberp alert-message-seconds)
-        (sit-for alert-message-seconds))
-      (alert-message (or current-msg ""))
-      retval)))
-
-;;;###autoload
-(defun alert-message-insert (&rest args)
-  "An flet'able replacement for `message' which inserts text instead of echoing.
-
-ARGS are as for `message', including a format-string."
-  (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args)))
-        (alert-message-preformatted t))
-    (alert-message-logonly msg)
-    (alert--message-insert-1 msg)
-    msg))
-
-(defun alert--message-insert-1 (msg)
-  "Internal driver for `alert-message-insert'.
-
-Inserts pre-formatted MSG at the current position with line feeds as needed."
-  (unless (eq (line-beginning-position) (point))
-    (insert "\n"))
-  (insert msg)
-  (unless (eq (line-beginning-position) (point))
-    (insert "\n")))
-
-;;;###autoload
-(defun alert-message-popup (&rest args)
-  "An flet'able replacement for `message' which uses popups instead of echoing.
-
-The functions `popup-volatile' and `popup' are attempted in
-order to create a popup.  If both functions fail, the message
-content will appear in the echo area as usual.
-
-ARGS are as for `message', including a format-string."
-  (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args)))
-        (alert-message-preformatted t))
-    (alert-message-logonly msg)
-    (condition-case nil
-        (progn
-          (popup-volatile msg)
-          msg)
-      (error nil
-         (condition-case nil
-             (progn
-               (popup-tip msg)
-               msg)
-           (error nil
-                (alert-message-nolog msg)))))))
-
-;;;###autoload
-(defun alert-message-notify (&rest args)
-  "An flet'able replacement for `message' which uses notifications instead echo.
-
-The following functions are attempted in order call system
-notifications: `notify' and `todochiku-message'.  If both
-functions fail, the message content will appear in the echo
-area as usual.
-
-ARGS are as for `message', including a format-string."
-  (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args)))
-        (alert-message-preformatted t))
-    (alert-message-logonly msg)
-    (condition-case nil
-        (progn
-          (notify alert-message-notify-title msg)
-          msg)
-      (error nil
-         (condition-case nil
-             (progn
-               (todochiku-message alert-message-notify-title msg "")
-               msg)
-           (error nil
-                (alert-message-nolog msg)))))))
 
 ;;; interactive commands
 
