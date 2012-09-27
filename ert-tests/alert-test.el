@@ -53,17 +53,31 @@
      (y-or-n-p "Did that work as expected?"))))
 
 
-;;; alert-message-maybe-formatted @@@ todo
-;;
-;; (ert-deftest alert-message-maybe-formatted-*** nil
-;;   :tags '(:interactive)
-;;   (should
-;;    (let ((cursor-in-echo-area t))
-;;      (read-char "Press a key - todo")
-;;      (setq cursor-in-echo-area nil)
-;;      (alert-message-maybe-formatted "message")
-;;      (sleep-for 1)
-;;      (y-or-n-p "Did that work as expected?"))))
+;;; alert-message-maybe-formatted
+
+(ert-deftest alert-message-maybe-formatted-01 nil
+  :tags '(:interactive)
+  (should
+   (let ((alert-message-preformatted t)
+         (cursor-in-echo-area t))
+     (read-char "Press a key to generate an unformatted message, which should contain a literal percent sign.")
+     (setq cursor-in-echo-area nil)
+     (alert-message-maybe-formatted "message-maybe-formatted %s" 875)
+     (should (equal "message-maybe-formatted %s" (current-message)))
+     (sleep-for 1)
+     (y-or-n-p "Did that work as expected?"))))
+
+(ert-deftest alert-message-maybe-formatted-02 nil
+  :tags '(:interactive)
+  (should
+   (let ((alert-message-preformatted t)
+         (cursor-in-echo-area t))
+     (read-char "Press a key to generate an formatted message, which should NOT contain a literal percent sign.")
+     (setq cursor-in-echo-area nil)
+     (alert-message-maybe-formatted "message-maybe-formatted %s" 875)
+     (should (equal "message-maybe-formatted 875" (current-message)))
+     (sleep-for 1)
+     (y-or-n-p "Did that work as expected?"))))
 
 
 ;;; alert-message-logonly
