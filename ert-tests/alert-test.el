@@ -336,7 +336,7 @@
    (let ((cursor-in-echo-area t))
      (read-char "Press a key to generate an alert which simulates `message'")
      (setq cursor-in-echo-area nil)
-     (alert (format "message %s" 1) 'quiet 0 'nocolor 'log)
+     (alert (format "%s message" "standard") 'quiet 0 'nocolor 'log)
      (sleep-for 1)
      (setq cursor-in-echo-area t)
      (y-or-n-p "Did that work as expected?"))))
