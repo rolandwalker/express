@@ -73,7 +73,8 @@
 ;; it, and add the following to your ~/.emacs file:
 ;;
 ;;    (require 'alert)
-;;    (alert-install-aliases)     ; optionally
+;;    (alert-install-aliases)     ; optionally, can also be set in
+;;                                ; customize
 ;;
 ;; See Also
 ;;
@@ -183,9 +184,42 @@
   "Face to use for highlighting alert messages."
   :group 'alert)
 
+;;;###autoload
+(defcustom alert-install-short-aliases nil
+  "Install short aliases such as `message-nolog' for `alert-message-nolog'."
+  :type 'boolean
+  :group 'alert)
+
 ;;; aliases and fsets
 
 (fset 'alert-message (symbol-function 'message))
+
+;;;###autoload
+(defun alert-install-aliases ()
+  "Install aliases outside the \"alert-\" namespace.
+
+The following aliases will be installed:
+
+   message-nolog      for   alert-message-nolog
+   message-logonly    for   alert-message-logonly
+   message-noformat   for   alert-message-noformat
+   message-highlight  for   alert-message-highlight
+   message-insert     for   alert-message-insert
+   message-notify     for   alert-message-notify
+   message-popup      for   alert-message-popup
+   message-temp       for   alert-message-temp"
+  (defalias 'message-nolog      'alert-message-nolog)
+  (defalias 'message-logonly    'alert-message-logonly)
+  (defalias 'message-highlight  'alert-message-highlight)
+  (defalias 'message-insert     'alert-message-insert)
+  (defalias 'message-noformat   'alert-message-noformat)
+  (defalias 'message-notify     'alert-message-notify)
+  (defalias 'message-popup      'alert-message-popup)
+  (defalias 'message-temp       'alert-message-temp))
+
+;;;###autoload
+(when alert-install-short-aliases
+  (alert-install-aliases))
 
 ;;; compatibility functions
 
@@ -451,32 +485,6 @@ The following forms using `message` and `alert` are equivalent:
           (alert-message-temp colored-content)
         (alert-message-noformat colored-content))))
   content)
-
-;;; interactive commands
-
-;;;###autoload
-(defun alert-install-aliases ()
-  "Install aliases outside the \"alert-\" namespace.
-
-The following aliases will be installed:
-
-   message-nolog      for   alert-message-nolog
-   message-logonly    for   alert-message-logonly
-   message-noformat   for   alert-message-noformat
-   message-highlight  for   alert-message-highlight
-   message-insert     for   alert-message-insert
-   message-notify     for   alert-message-notify
-   message-popup      for   alert-message-popup
-   message-temp       for   alert-message-temp"
-  (interactive)
-  (defalias 'message-nolog      'alert-message-nolog)
-  (defalias 'message-logonly    'alert-message-logonly)
-  (defalias 'message-highlight  'alert-message-highlight)
-  (defalias 'message-insert     'alert-message-insert)
-  (defalias 'message-noformat   'alert-message-noformat)
-  (defalias 'message-notify     'alert-message-notify)
-  (defalias 'message-popup      'alert-message-popup)
-  (defalias 'message-temp       'alert-message-temp))
 
 (provide 'alert)
 
