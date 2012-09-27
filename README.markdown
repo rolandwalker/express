@@ -8,8 +8,8 @@ Alternatives to Emacs "message".
 Quickstart
 ----------
 
-    (require 'alert)
-    (alert "important message")
+	(require 'alert)
+	(alert "important message")
 
 alert
 -----
