@@ -8,8 +8,11 @@ Alternatives to Emacs "message".
 Quickstart
 ----------
 
-	(require 'alert)
-	(alert "important message")
+```lisp
+(require 'alert)
+ 
+(alert "important message")
+```
 
 alert
 -----
@@ -79,8 +82,11 @@ The behavior of `alert` is very different from `message`:
 
 The following forms using `message` and `alert` are equivalent:
 
-	(message "hello, %s" name)
-	(alert (format "hello, %s" name) 'quiet 0 'nocolor 'log)
+```lisp
+(message "hello, %s" name)
+ 
+(alert (format "hello, %s" name) 'quiet 0 'nocolor 'log)
+```
 
 message alternatives
 --------------------
@@ -100,24 +106,30 @@ which may be useful in an `flet` construct to control messaging.
 For example, the following code would redirect messages from a very
 chatty library to the log:
 
-	(flet ((message (&rest args)
-	                (apply 'alert-message-logonly args)))
-	  (require 'very-chatty-library))
+```lisp
+(flet ((message (&rest args)
+                (apply 'alert-message-logonly args)))
+  (require 'very-chatty-library))
+```
 
 The same method may also be handy with `defadvice`:
 
-	(defadvice very-chatty-function (around very-chatty-redirect activate)
-	  (flet ((message (&rest args)
-	                  (apply 'alert-message-logonly args)))
-	    ad-do-it))
+```lisp
+(defadvice very-chatty-function (around very-chatty-redirect activate)
+  (flet ((message (&rest args)
+                  (apply 'alert-message-logonly args)))
+    ad-do-it))
+```
 
 Similarly, important messages may be redirected to a more visible
 form:
 
-	(defadvice an-important-function (around an-important-function activate)
-	  (flet ((message (&rest args)
-	                  (apply 'alert-message-notify args)))
-	    ad-do-it))
+```lisp
+(defadvice an-important-function (around an-important-function activate)
+  (flet ((message (&rest args)
+                  (apply 'alert-message-notify args)))
+    ad-do-it))
+```
 
 Notes
 -----
