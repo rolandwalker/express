@@ -24,13 +24,18 @@ PACKAGE_NAME=$(shell basename $(WORK_DIR))
 AUTOLOADS_FILE=$(PACKAGE_NAME)-loaddefs.el
 TEST_DIR=ert-tests
 TEST_DEP_1=ert
-TEST_DEP_1_URL=http://bzr.savannah.gnu.org/lh/emacs/emacs-24/download/head:/ert.el-20110112160650-056hnl9qhpjvjicy-2/ert.el
+TEST_DEP_1_STABLE_URL=http://bzr.savannah.gnu.org/lh/emacs/emacs-24/download/head:/ert.el-20110112160650-056hnl9qhpjvjicy-2/ert.el
+TEST_DEP_1_LATEST_URL=https://raw.github.com/emacsmirror/emacs/master/lisp/emacs-lisp/ert.el
 TEST_DEP_2=string-utils
-TEST_DEP_2_URL=https://raw.github.com/rolandwalker/string-utils/cefb98ecf8257f69d8288929fc0425f145484452/string-utils.el
+TEST_DEP_2_STABLE_URL=https://raw.github.com/rolandwalker/string-utils/cefb98ecf8257f69d8288929fc0425f145484452/string-utils.el
+TEST_DEP_2_LATEST_URL=https://raw.github.com/rolandwalker/string-utils/master/string-utils.el
 TEST_DEP_3=notify
-TEST_DEP_3_URL=http://marmalade-repo.org/packages/notify-2010.8.20.el
+TEST_DEP_3_STABLE_URL=http://marmalade-repo.org/packages/notify-2010.8.20.el
+# note, no "latest" location known for notify.el
+TEST_DEP_3_LATEST_URL=http://marmalade-repo.org/packages/notify-2010.8.20.el
 TEST_DEP_4=popup
-TEST_DEP_4_URL=https://raw.github.com/auto-complete/popup-el/c85ccd3c8a4e88059e87bd07c9965b6de3e4e877/popup.el
+TEST_DEP_4_STABLE_URL=https://raw.github.com/auto-complete/popup-el/c85ccd3c8a4e88059e87bd07c9965b6de3e4e877/popup.el
+TEST_DEP_4_LATEST_URL=https://raw.github.com/auto-complete/popup-el/master/popup.el
 
 build :
 	$(EMACS) $(EMACS_BATCH) --eval             \
@@ -74,10 +79,16 @@ test-dep-4 :
 	(echo "Can't load test dependency $(TEST_DEP_4).el, run 'make downloads' to fetch it" ; exit 1)
 
 downloads :
-	$(CURL) '$(TEST_DEP_1_URL)' > $(TEST_DIR)/$(TEST_DEP_1).el
-	$(CURL) '$(TEST_DEP_2_URL)' > $(TEST_DIR)/$(TEST_DEP_2).el
-	$(CURL) '$(TEST_DEP_3_URL)' > $(TEST_DIR)/$(TEST_DEP_3).el
-	$(CURL) '$(TEST_DEP_4_URL)' > $(TEST_DIR)/$(TEST_DEP_4).el
+	$(CURL) '$(TEST_DEP_1_STABLE_URL)' > $(TEST_DIR)/$(TEST_DEP_1).el
+	$(CURL) '$(TEST_DEP_2_STABLE_URL)' > $(TEST_DIR)/$(TEST_DEP_2).el
+	$(CURL) '$(TEST_DEP_3_STABLE_URL)' > $(TEST_DIR)/$(TEST_DEP_3).el
+	$(CURL) '$(TEST_DEP_4_STABLE_URL)' > $(TEST_DIR)/$(TEST_DEP_4).el
+
+downloads-latest :
+	$(CURL) '$(TEST_DEP_1_LATEST_URL)' > $(TEST_DIR)/$(TEST_DEP_1).el
+	$(CURL) '$(TEST_DEP_2_LATEST_URL)' > $(TEST_DIR)/$(TEST_DEP_2).el
+	$(CURL) '$(TEST_DEP_3_LATEST_URL)' > $(TEST_DIR)/$(TEST_DEP_3).el
+	$(CURL) '$(TEST_DEP_4_LATEST_URL)' > $(TEST_DIR)/$(TEST_DEP_4).el
 
 autoloads :
 	$(EMACS) $(EMACS_BATCH) --eval                       \
