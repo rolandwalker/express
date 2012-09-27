@@ -17,6 +17,10 @@ TEST_DEP_1=ert
 TEST_DEP_1_URL=http://bzr.savannah.gnu.org/lh/emacs/emacs-24/download/head:/ert.el-20110112160650-056hnl9qhpjvjicy-2/ert.el
 TEST_DEP_2=string-utils
 TEST_DEP_2_URL=https://raw.github.com/rolandwalker/string-utils/cefb98ecf8257f69d8288929fc0425f145484452/string-utils.el
+TEST_DEP_3=notify
+TEST_DEP_3_URL=http://marmalade-repo.org/packages/notify-2010.8.20.el
+TEST_DEP_4=popup
+TEST_DEP_4_URL=https://raw.github.com/auto-complete/popup-el/c85ccd3c8a4e88059e87bd07c9965b6de3e4e877/popup.el
 
 build :
 	$(EMACS) $(EMACS_FLAGS) --eval             \
@@ -39,9 +43,31 @@ test-dep-2 :
 	      (require '$(TEST_DEP_2)))"                  || \
 	(echo "Can't load test dependency $(TEST_DEP_2).el, run 'make downloads' to fetch it" ; exit 1)
 
+test-dep-3 :
+	@cd $(TEST_DIR)                                   && \
+	$(EMACS) $(EMACS_FLAGS)  -L . -L .. --eval           \
+	    "(progn                                          \
+	      (setq package-load-list '(($(TEST_DEP_3) t)))  \
+	      (when (fboundp 'package-initialize)            \
+	       (package-initialize))                         \
+	      (require '$(TEST_DEP_3)))"                  || \
+	(echo "Can't load test dependency $(TEST_DEP_3).el, run 'make downloads' to fetch it" ; exit 1)
+
+test-dep-4 :
+	@cd $(TEST_DIR)                                   && \
+	$(EMACS) $(EMACS_FLAGS)  -L . -L .. --eval           \
+	    "(progn                                          \
+	      (setq package-load-list '(($(TEST_DEP_4) t)))  \
+	      (when (fboundp 'package-initialize)            \
+	       (package-initialize))                         \
+	      (require '$(TEST_DEP_4)))"                  || \
+	(echo "Can't load test dependency $(TEST_DEP_4).el, run 'make downloads' to fetch it" ; exit 1)
+
 downloads :
 	$(CURL) '$(TEST_DEP_1_URL)' > $(TEST_DIR)/$(TEST_DEP_1).el
 	$(CURL) '$(TEST_DEP_2_URL)' > $(TEST_DIR)/$(TEST_DEP_2).el
+	$(CURL) '$(TEST_DEP_3_URL)' > $(TEST_DIR)/$(TEST_DEP_3).el
+	$(CURL) '$(TEST_DEP_4_URL)' > $(TEST_DIR)/$(TEST_DEP_4).el
 
 autoloads :
 	$(EMACS) $(EMACS_FLAGS) --eval                       \
@@ -52,7 +78,7 @@ autoloads :
 test-autoloads : autoloads
 	@$(EMACS) $(EMACS_FLAGS) -l "./$(AUTOLOADS_FILE)" || echo "failed to load autoloads: $(AUTOLOADS_FILE)"
 
-test : build test-dep-1 test-dep-2 test-autoloads
+test : build test-dep-1 test-dep-2 test-dep-3 test-dep-4 test-autoloads
 	@cd $(TEST_DIR)                                   && \
 	(for test_lib in *-test.el; do                       \
 	    $(EMACS) $(EMACS_FLAGS) -L . -L .. -l cl -l $(TEST_DEP_1) -l $$test_lib --eval \
@@ -62,4 +88,5 @@ test : build test-dep-1 test-dep-2 test-autoloads
 	done)
 
 clean :
-	@rm -f $(AUTOLOADS_FILE) *.elc *~ */*.elc */*~ $(TEST_DIR)/$(TEST_DEP_1).el $(TEST_DIR)/$(TEST_DEP_2).el
+	@rm -f $(AUTOLOADS_FILE) *.elc *~ */*.elc */*~ $(TEST_DIR)/$(TEST_DEP_1).el $(TEST_DIR)/$(TEST_DEP_2).el \
+	 $(TEST_DIR)/$(TEST_DEP_3).el $(TEST_DIR)/$(TEST_DEP_4).el
