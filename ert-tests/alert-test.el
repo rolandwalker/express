@@ -191,17 +191,20 @@
 
 ;;; alert-message-popup
 
-(ert-deftest alert-message-popup-01 nil
-  "Test Bug: Popups fail to appear under the test harness"
-  :tags '(:interactive)
-  :expected-result :failed
-  (should
-   (let ((cursor-in-echo-area t))
-     (read-char "Press a key to generate a popup message")
-     (setq cursor-in-echo-area nil)
-     (alert-message-popup "popup message")
-     (sleep-for 1)
-     (y-or-n-p "Did that work as expected?"))))
+;; worse than failure to appear, this sometimes seems like
+;; a wedge to the user, y-or-n-p prompt does not appear
+;;
+;; (ert-deftest alert-message-popup-01 nil
+;;   "Test Bug: Popups fail to appear under the test harness"
+;;   :tags '(:interactive)
+;;   :expected-result :failed
+;;   (should
+;;    (let ((cursor-in-echo-area t))
+;;      (read-char "Press a key to generate a popup message")
+;;      (setq cursor-in-echo-area nil)
+;;      (alert-message-popup "popup message")
+;;      (sleep-for 1)
+;;      (y-or-n-p "Did that work as expected?"))))
 
 
 ;;; alert-message-notify
@@ -328,30 +331,6 @@
      (y-or-n-p "Did that work as expected?"))))
 
 (ert-deftest alert-10 nil
-  "Test Bug: Popups fail to appear under the test harness"
-  :tags '(:interactive)
-  :expected-result :failed
-  (should
-   (let ((cursor-in-echo-area t))
-     (read-char "Press a key to generate an alert which also appears as a popup")
-     (setq cursor-in-echo-area nil)
-     (alert "alert in echo area and popup" nil nil nil nil nil t)
-     (setq cursor-in-echo-area t)
-     (y-or-n-p "Did that work as expected?"))))
-
-(ert-deftest alert-11 nil
-  "Test Bug: Popups fail to appear under the test harness"
-  :tags '(:interactive)
-  :expected-result :failed
-  (should
-   (let ((cursor-in-echo-area t))
-     (read-char "Press a key to generate an alert which only appears as a popup")
-     (setq cursor-in-echo-area nil)
-     (alert "alert as popup, no echo area" nil nil nil nil nil 'replace-echo)
-     (setq cursor-in-echo-area t)
-     (y-or-n-p "Did that work as expected?"))))
-
-(ert-deftest alert-12 nil
   :tags '(:interactive)
   (should
    (let ((cursor-in-echo-area t))
@@ -361,6 +340,32 @@
      (sleep-for 1)
      (setq cursor-in-echo-area t)
      (y-or-n-p "Did that work as expected?"))))
+
+;; worse than failure, these may appear to wedge
+;;
+;; (ert-deftest alert-11 nil
+;;   "Test Bug: Popups fail to appear under the test harness"
+;;   :tags '(:interactive)
+;;   :expected-result :failed
+;;   (should
+;;    (let ((cursor-in-echo-area t))
+;;      (read-char "Press a key to generate an alert which also appears as a popup")
+;;      (setq cursor-in-echo-area nil)
+;;      (alert "alert in echo area and popup" nil nil nil nil nil t)
+;;      (setq cursor-in-echo-area t)
+;;      (y-or-n-p "Did that work as expected?"))))
+;;
+;; (ert-deftest alert-12 nil
+;;   "Test Bug: Popups fail to appear under the test harness"
+;;   :tags '(:interactive)
+;;   :expected-result :failed
+;;   (should
+;;    (let ((cursor-in-echo-area t))
+;;      (read-char "Press a key to generate an alert which only appears as a popup")
+;;      (setq cursor-in-echo-area nil)
+;;      (alert "alert as popup, no echo area" nil nil nil nil nil 'replace-echo)
+;;      (setq cursor-in-echo-area t)
+;;      (y-or-n-p "Did that work as expected?"))))
 
 ;;
 ;; Emacs
