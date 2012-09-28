@@ -38,6 +38,10 @@ TEST_DEP_4=popup
 TEST_DEP_4_STABLE_URL=https://raw.github.com/auto-complete/popup-el/c85ccd3c8a4e88059e87bd07c9965b6de3e4e877/popup.el
 TEST_DEP_4_LATEST_URL=https://raw.github.com/auto-complete/popup-el/master/popup.el
 
+.PHONY : build downloads downloads-latest autoloads test-autoloads test-travis \
+         test test-interactive clean edit test-dep-1 test-dep-2 test-dep-3     \
+         test-dep-4 test-dep-5 test-dep-6 test-dep-7 test-dep-8 test-dep-9
+
 build :
 	$(EMACS) $(EMACS_BATCH) --eval             \
 	    "(progn                                \
