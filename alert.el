@@ -196,8 +196,10 @@
 (fset 'alert-message (symbol-function 'message))
 
 ;;;###autoload
-(defun alert-install-aliases ()
+(defun alert-install-aliases (&optional arg)
   "Install aliases outside the \"alert-\" namespace.
+
+With optional negative ARG, uninstall aliases.
 
 The following aliases will be installed:
 
@@ -209,14 +211,24 @@ The following aliases will be installed:
    message-notify     for   alert-message-notify
    message-popup      for   alert-message-popup
    message-temp       for   alert-message-temp"
-  (defalias 'message-nolog      'alert-message-nolog)
-  (defalias 'message-logonly    'alert-message-logonly)
-  (defalias 'message-highlight  'alert-message-highlight)
-  (defalias 'message-insert     'alert-message-insert)
-  (defalias 'message-noformat   'alert-message-noformat)
-  (defalias 'message-notify     'alert-message-notify)
-  (defalias 'message-popup      'alert-message-popup)
-  (defalias 'message-temp       'alert-message-temp))
+  (let ((syms '(
+                nolog
+                logonly
+                highlight
+                insert
+                noformat
+                notify
+                popup
+                temp
+                )))
+    (cond
+      ((and (numberp arg)
+            (< arg 0))
+       (dolist (sym syms)
+         (fmakunbound (intern (format "message-%s" sym)))))
+      (t
+       (dolist (sym syms)
+         (defalias (intern (format "message-%s" sym)) (intern (format "alert-message-%s" sym))))))))
 
 ;;;###autoload
 (when alert-install-short-aliases
