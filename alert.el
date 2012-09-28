@@ -18,6 +18,7 @@
 ;; Quickstart
 ;;
 ;;    (require 'alert)
+;;
 ;;    (alert "important message")
 ;;
 ;; Explanation
