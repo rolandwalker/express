@@ -38,6 +38,14 @@
   (alert-install-aliases)
   (should (fboundp 'message-nolog)))
 
+(ert-deftest alert-install-aliases-02 nil
+  (alert-install-aliases -1)
+  (should-not (fboundp 'message-nolog)))
+
+(ert-deftest alert-install-aliases-03 nil
+  (alert-install-aliases)
+  (should (fboundp 'message-nolog)))
+
 
 ;;; alert-message-noformat
 
