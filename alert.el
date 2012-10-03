@@ -18,10 +18,11 @@
 ;; Quickstart
 ;;
 ;;     (require 'alert)
+;;     (alert-install-aliases)
 ;;
 ;;     (alert "important message")
 ;;
-;;     (alert-with-message-logonly
+;;     (with-message-logonly
 ;;       (do-something-noisy))
 ;;
 ;; Explanation
@@ -85,8 +86,11 @@
 ;; it, and add the following to your ~/.emacs file:
 ;;
 ;;     (require 'alert)
-;;     (alert-install-aliases)     ; optionally, can also be set in
-;;                                 ; customize
+;;     (alert-install-aliases)     ; optionally, can also be set in customize
+;;
+;; Running `alert-install-aliases' or setting the corresponding
+;; variable in customize will install convenience aliases outside
+;; the "alert-" namespace.  This is disabled by default.
 ;;
 ;; See Also
 ;;

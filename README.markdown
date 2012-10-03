@@ -3,17 +3,18 @@
 Overview
 ========
 
-Alternatives to Emacs "message".
+Alternatives to Emacs `message`.
 
 Quickstart
 ----------
 
 ```lisp
 (require 'alert)
+(alert-install-aliases)
  
 (alert "important message")
-
-(alert-with-message-logonly
+ 
+(with-message-logonly
   (do-something-noisy))
 ```
 
@@ -68,7 +69,7 @@ used in addition to the echo area.
 
 Optional POPUP enables sending the message via `popup-tip` from
 popup.el.  The default is nil.  If POPUP is `'replace-echo`, then
-the popup will be used instead of the echo area.  For any other 
+the popup will be used instead of the echo area.  For any other
 non-nil value, the popup will be used in addition to the echo area.
 
 The behavior of `alert` is very different from `message`:
@@ -148,15 +149,15 @@ form:
 Notes
 -----
 
-The function `alert-install-aliases` provides shorter aliases
-for the message alternative functions, outside of the `alert-`
-namespace.
+Running `alert-install-aliases` or setting the corresponding
+variable in customize will install convenience aliases outside
+the `alert-` namespace.  This is disabled by default.
 
 The function `message-noformat` is also available, but it is
 not quite a drop-in replacement for `message`.
 
-Some of the functions require the availability of notify.el,
-todochiku.el or popup.el.  In all cases, the function will
+Some of the functions require the availability of [notify.el](http://emacswiki.org/emacs/notify.el), [todochiku.el](http://www.emacswiki.org/emacs/ToDoChiKu),
+or [popup.el](http://github.com/auto-complete/popup-el).  In all cases, the function will
 degrade to an ordinary message if the external library is not
 present.
 
