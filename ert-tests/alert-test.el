@@ -175,6 +175,34 @@
                        (buffer-substring-no-properties (line-beginning-position) (line-end-position))))))))
 
 
+;;; alert-message-string
+
+(ert-deftest alert-message-string-01 nil
+  (let ((msg "message-string-123456"))
+    (alert-message-string msg)
+    (should-not (equal msg (current-message)))))
+
+(ert-deftest alert-message-string-02 nil
+  (let ((msg "message-string-123456")
+        (str-val nil))
+    (setq str-val (alert-message-string msg))
+    (should (equal (concat msg "\n") str-val))))
+
+(ert-deftest alert-message-string-03 nil
+  (let ((str-val nil))
+    (setq str-val (alert-message-string "message-string-%s" 345678))
+    (should (equal "message-string-345678\n" str-val))))
+
+(ert-deftest alert-message-string-04 nil
+  (let ((msg "message-string-314159")
+        (str-val nil))
+    (setq str-val
+          (alert-with-message-string
+            (message msg)
+            (message msg)))
+    (should (equal (concat msg "\n" msg "\n") str-val))))
+
+
 ;;; alert-message-nolog
 
 (ert-deftest alert-message-nolog-01 nil

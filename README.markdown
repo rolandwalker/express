@@ -106,6 +106,7 @@ construct:
 	alert-message-notify
 	alert-message-popup
 	alert-message-temp
+	alert-message-string
 
 macros
 ------
@@ -120,6 +121,7 @@ the enclosing expression:
 	alert-with-message-notify
 	alert-with-message-popup
 	alert-with-message-temp
+	alert-with-message-string
 
 For example, the following code would redirect messages from a very
 chatty library to the log:

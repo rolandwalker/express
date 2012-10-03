@@ -51,6 +51,7 @@
 ;;     `alert-message-notify'
 ;;     `alert-message-popup'
 ;;     `alert-message-temp'
+;;     `alert-message-string'
 ;;
 ;; The following macros modify the behavior of `message' within
 ;; the enclosing expression:
@@ -62,6 +63,7 @@
 ;;     `alert-with-message-notify'
 ;;     `alert-with-message-popup'
 ;;     `alert-with-message-temp'
+;;     `alert-with-message-string'
 ;;
 ;; For example, the following code would redirect messages from a very
 ;; chatty library to the log:
@@ -244,6 +246,7 @@ The following aliases will be installed:
                 notify
                 popup
                 temp
+                string
                 )))
     (cond
       ((and (numberp arg)
@@ -349,6 +352,16 @@ ARGS are as for `message', including a format-string."
     (alert-message-logonly msg)
     (alert--message-insert-1 msg)
     msg))
+
+;;;###autoload
+(defun alert-message-string (&rest args)
+  "An flet'able replacement for `message' which returns a string instead of echoing.
+
+Newline is appended to the return value as with `message'.
+
+ARGS are as for `message', including a format-string."
+  (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args))))
+    (concat msg "\n")))
 
 ;;;###autoload
 (defun alert-message-nolog (&rest args)
@@ -595,6 +608,22 @@ Lisp will be affected."
   `(cl-flet ((message (&rest args)
                       (apply 'alert-message-insert args)))
      ,@body))
+
+;;;###autoload
+(defmacro alert-with-message-string (&rest body)
+  "Execute BODY, capturing the output of `message' to a string.
+
+Accumulated message output is returned.
+
+Note that since `message' is a subr, only calls to `message' from
+Lisp will be affected."
+  (declare (indent 0) (debug t))
+  (let ((output (gensym "--with-message-string--")))
+    `(let ((,output ""))
+       (cl-flet ((message (&rest args)
+                          (callf concat ,output (apply 'alert-message-string args))))
+         ,@body)
+       ,output)))
 
 ;;;###autoload
 (defmacro alert-with-message-temp (&rest body)
