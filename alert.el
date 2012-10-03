@@ -17,9 +17,9 @@
 ;;
 ;; Quickstart
 ;;
-;;    (require 'alert)
+;;     (require 'alert)
 ;;
-;;    (alert "important message")
+;;     (alert "important message")
 ;;
 ;; Explanation
 ;;
@@ -39,59 +39,59 @@
 ;; The following functions provided by this library are drop-in
 ;; alternatives to `message':
 ;;
-;;    `alert-message-nolog'
-;;    `alert-message-logonly'
-;;    `alert-message-highlight'
-;;    `alert-message-insert'
-;;    `alert-message-notify'
-;;    `alert-message-popup'
-;;    `alert-message-temp'
+;;     `alert-message-nolog'
+;;     `alert-message-logonly'
+;;     `alert-message-highlight'
+;;     `alert-message-insert'
+;;     `alert-message-notify'
+;;     `alert-message-popup'
+;;     `alert-message-temp'
 ;;
 ;; which may be useful in an `flet' construct to control messaging.
 ;; For example, the following code would redirect messages from a very
 ;; chatty library to the log:
 ;;
-;;    (flet ((message (&rest args)
-;;                    (apply 'alert-message-logonly args)))
-;;      (require 'very-chatty-library))
+;;     (flet ((message (&rest args)
+;;                     (apply 'alert-message-logonly args)))
+;;       (require 'very-chatty-library))
 ;;
 ;; The same method may also be handy with `defadvice':
 ;;
-;;    (defadvice very-chatty-function (around very-chatty-redirect activate)
-;;       (flet ((message (&rest args)
-;;                       (apply 'alert-message-logonly args)))
-;;         ad-do-it))
+;;     (defadvice very-chatty-function (around very-chatty-redirect activate)
+;;        (flet ((message (&rest args)
+;;                        (apply 'alert-message-logonly args)))
+;;          ad-do-it))
 ;;
 ;; Similarly, important messages may be redirected to a more visible
 ;; form:
 ;;
-;;    (defadvice an-important-function (around an-important-function activate)
-;;       (flet ((message (&rest args)
-;;                       (apply 'alert-message-notify args)))
-;;         ad-do-it))
+;;     (defadvice an-important-function (around an-important-function activate)
+;;        (flet ((message (&rest args)
+;;                        (apply 'alert-message-notify args)))
+;;          ad-do-it))
 ;;
 ;; To use `alert', place the alert.el library somewhere Emacs can find
 ;; it, and add the following to your ~/.emacs file:
 ;;
-;;    (require 'alert)
-;;    (alert-install-aliases)     ; optionally, can also be set in
-;;                                ; customize
+;;     (require 'alert)
+;;     (alert-install-aliases)     ; optionally, can also be set in
+;;                                 ; customize
 ;;
 ;; See Also
 ;;
-;;    M-x customize-group RET alert RET
-;;    M-x customize-group RET notify RET
-;;    M-x customize-group RET popup RET
+;;     M-x customize-group RET alert RET
+;;     M-x customize-group RET notify RET
+;;     M-x customize-group RET popup RET
 ;;
 ;; Notes
 ;;
-;;    The function `message-noformat' is also available, but it is
-;;    not quite a drop-in replacement for `message'.
+;;     The function `message-noformat' is also available, but it is
+;;     not quite a drop-in replacement for `message'.
 ;;
-;;    Some of the functions require the availability of notify.el,
-;;    todochiku.el or popup.el.  In all cases, the function will
-;;    degrade to an ordinary message if the external library is not
-;;    present.
+;;     Some of the functions require the availability of notify.el,
+;;     todochiku.el or popup.el.  In all cases, the function will
+;;     degrade to an ordinary message if the external library is not
+;;     present.
 ;;
 ;; Compatibility and Requirements
 ;;
@@ -105,11 +105,11 @@
 ;;
 ;; Bugs
 ;;
-;;    Soft dependency on unpublished popup-volatile.
+;;     Soft dependency on unpublished popup-volatile.
 ;;
 ;; TODO
 ;;
-;;    Default icons and timeouts for notifications.
+;;     Default icons and timeouts for notifications.
 ;;
 ;;; License
 ;;
