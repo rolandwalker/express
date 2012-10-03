@@ -1,5 +1,5 @@
 
-;; requires and setup
+;;; requires and setup
 
 (when load-file-name
   (setq package-enable-at-startup nil)
@@ -14,6 +14,7 @@
 (require 'popup)
 
 (require 'alert)
+
 
 ;;; alert--message-insert-1
 
@@ -482,6 +483,7 @@
 ;;      (alert "alert as popup, no echo area" nil nil nil nil nil 'replace-echo)
 ;;      (setq cursor-in-echo-area t)
 ;;      (y-or-n-p "Did that work as expected?"))))
+
 
 ;;
 ;; Emacs
