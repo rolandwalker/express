@@ -78,9 +78,9 @@
 (ert-deftest alert-message-maybe-formatted-02 nil
   :tags '(:interactive)
   (should
-   (let ((alert-message-preformatted t)
+   (let ((alert-message-preformatted nil)
          (cursor-in-echo-area t))
-     (read-char "Press a key to generate an formatted message, which should NOT contain a literal percent sign.")
+     (read-char "Press a key to generate a formatted message, which should NOT contain a literal percent sign.")
      (setq cursor-in-echo-area nil)
      (alert-message-maybe-formatted "message-maybe-formatted %s" 875)
      (should (equal "message-maybe-formatted 875" (current-message)))
