@@ -60,6 +60,18 @@
      (sleep-for 1)
      (y-or-n-p "Did that work as expected?"))))
 
+(ert-deftest alert-message-noformat-02 nil
+  :tags '(:interactive)
+  (should
+   (let ((cursor-in-echo-area t))
+     (read-char "Press a key to generate an unformatted message, which should be \"hello 2 %s\", including a literal percent sign.")
+     (setq cursor-in-echo-area nil)
+     (alert-with-message-noformat
+       (message "hello 2 %s" 'other 'args 'ignored))
+     (should (equal "hello 2 %s" (current-message)))
+     (sleep-for 1)
+     (y-or-n-p "Did that work as expected?"))))
+
 
 ;;; alert-message-maybe-formatted
 
@@ -112,6 +124,17 @@
                    (forward-line -1)
                    (buffer-substring-no-properties (line-beginning-position) (line-end-position))))))
 
+(ert-deftest alert-message-logonly-04 nil
+  (let ((msg "message-logonly-98765"))
+    (alert-with-message-logonly
+      (message msg))
+    (should-not (equal msg (current-message)))
+    (should (equal msg
+                   (with-current-buffer "*Messages*"
+                     (goto-char (point-max))
+                     (forward-line -1)
+                     (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))))
+
 
 ;;; alert-message-insert
 
@@ -138,6 +161,17 @@
                    (progn
                      (forward-line -1)
                      (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))))
+
+(ert-deftest alert-message-insert-04 nil
+  (let ((msg "message-insert-314159"))
+    (with-temp-buffer
+      (alert-with-message-insert
+        (message "message-insert-314159"))
+      (should-not (equal msg (current-message)))
+      (should (equal msg
+                     (progn
+                       (forward-line -1)
+                       (buffer-substring-no-properties (line-beginning-position) (line-end-position))))))))
 
 
 ;;; alert-message-nolog
@@ -181,6 +215,24 @@
      (sleep-for 1)
      (y-or-n-p "Did that work as expected?"))))
 
+(ert-deftest alert-message-nolog-04 nil
+  :tags '(:interactive)
+  (should
+   (let ((msg "message-nolog-314159")
+         (cursor-in-echo-area t))
+     (read-char "Press a key to generate an unlogged message")
+     (setq cursor-in-echo-area nil)
+     (alert-with-message-nolog
+       (message msg))
+     (should (equal msg (current-message)))
+     (should-not (equal msg
+                        (with-current-buffer "*Messages*"
+                          (goto-char (point-max))
+                          (forward-line -1)
+                          (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
+     (sleep-for 1)
+     (y-or-n-p "Did that work as expected?"))))
+
 
 ;;; alert-message-temp
 
@@ -193,6 +245,19 @@
      (setq cursor-in-echo-area nil)
      (message "permanent message")
      (alert-message-temp "disappearing message")
+     (sleep-for 2)
+     (y-or-n-p "Did that work as expected?"))))
+
+(ert-deftest alert-message-temp-02 nil
+  :tags '(:interactive)
+  (should
+   (let ((cursor-in-echo-area t)
+         (alert-message-seconds 1))
+     (read-char "Press a key to generate a temporary message which disappears, leaving a permanent message")
+     (setq cursor-in-echo-area nil)
+     (message "permanent message 2")
+     (alert-with-message-temp
+       (message "disappearing message 2"))
      (sleep-for 2)
      (y-or-n-p "Did that work as expected?"))))
 
@@ -210,7 +275,20 @@
 ;;    (let ((cursor-in-echo-area t))
 ;;      (read-char "Press a key to generate a popup message")
 ;;      (setq cursor-in-echo-area nil)
-;;      (alert-message-popup "popup message")
+;;      (alert-message-popup "popup message 1")
+;;      (sleep-for 1)
+;;      (y-or-n-p "Did that work as expected?"))))
+;;
+;; (ert-deftest alert-message-popup-02 nil
+;;   "Test Bug: Popups fail to appear under the test harness"
+;;   :tags '(:interactive)
+;;   :expected-result :failed
+;;   (should
+;;    (let ((cursor-in-echo-area t))
+;;      (read-char "Press a key to generate a popup message")
+;;      (setq cursor-in-echo-area nil)
+;;      (alert-with-message-popup
+;;        (message "popup message 2"))
 ;;      (sleep-for 1)
 ;;      (y-or-n-p "Did that work as expected?"))))
 
@@ -223,9 +301,21 @@
    (let ((cursor-in-echo-area t))
      (read-char "Press a key to generate a notification message")
      (setq cursor-in-echo-area nil)
-     (alert-message-notify "notification message")
+     (alert-message-notify "notification message 1")
      (sleep-for 1)
      (y-or-n-p "Did that work as expected?"))))
+
+(ert-deftest alert-message-notify-02 nil
+  :tags '(:interactive)
+  (should
+   (let ((cursor-in-echo-area t))
+     (read-char "Press a key to generate a notification message")
+     (setq cursor-in-echo-area nil)
+     (alert-with-message-notify
+       (message "notification message 1"))
+     (sleep-for 1)
+     (y-or-n-p "Did that work as expected?"))))
+
 
 ;;; alert-message-highlight
 
@@ -235,7 +325,7 @@
    (let ((cursor-in-echo-area t))
      (read-char "Press a key to generate a highlighted message")
      (setq cursor-in-echo-area nil)
-     (alert-message-highlight "highlighted message")
+     (alert-message-highlight "highlighted message 1")
      (sleep-for 1)
      (with-current-buffer "*Messages*"
        (goto-char (point-max))
@@ -244,6 +334,24 @@
                 (buffer-substring               (line-beginning-position) (line-end-position))
                 (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
      (y-or-n-p "Did that work as expected?"))))
+
+(ert-deftest alert-message-highlight-02 nil
+  :tags '(:interactive)
+  (should
+   (let ((cursor-in-echo-area t))
+     (read-char "Press a key to generate a highlighted message")
+     (setq cursor-in-echo-area nil)
+     (alert-with-message-highlight
+       (message "highlighted message 2"))
+     (sleep-for 1)
+     (with-current-buffer "*Messages*"
+       (goto-char (point-max))
+       (forward-line -1)
+       (should (equal-including-properties
+                (buffer-substring               (line-beginning-position) (line-end-position))
+                (buffer-substring-no-properties (line-beginning-position) (line-end-position)))))
+     (y-or-n-p "Did that work as expected?"))))
+
 
 ;;; alert - todo more should assertions are possible to check state after alerts
 

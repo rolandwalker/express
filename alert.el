@@ -21,6 +21,9 @@
 ;;
 ;;     (alert "important message")
 ;;
+;;     (alert-with-message-logonly
+;;       (do-something-noisy))
+;;
 ;; Explanation
 ;;
 ;; Alert.el provides alternatives to Emacs' built-in `message'
@@ -37,7 +40,8 @@
 ;; docstring for details.
 ;;
 ;; The following functions provided by this library are drop-in
-;; alternatives to `message':
+;; alternatives to `message' which may be useful in an `flet'
+;; construct:
 ;;
 ;;     `alert-message-nolog'
 ;;     `alert-message-logonly'
@@ -47,28 +51,35 @@
 ;;     `alert-message-popup'
 ;;     `alert-message-temp'
 ;;
-;; which may be useful in an `flet' construct to control messaging.
+;; The following macros modify the behavior of `message' within
+;; the enclosing expression:
+;;
+;;     `alert-with-message-nolog'
+;;     `alert-with-message-logonly'
+;;     `alert-with-message-highlight'
+;;     `alert-with-message-insert'
+;;     `alert-with-message-notify'
+;;     `alert-with-message-popup'
+;;     `alert-with-message-temp'
+;;
 ;; For example, the following code would redirect messages from a very
 ;; chatty library to the log:
 ;;
-;;     (flet ((message (&rest args)
-;;                     (apply 'alert-message-logonly args)))
+;;     (alert-with-message-nolog
 ;;       (require 'very-chatty-library))
 ;;
 ;; The same method may also be handy with `defadvice':
 ;;
 ;;     (defadvice very-chatty-function (around very-chatty-redirect activate)
-;;        (flet ((message (&rest args)
-;;                        (apply 'alert-message-logonly args)))
-;;          ad-do-it))
+;;       (alert-with-message-nolog
+;;         ad-do-it))
 ;;
 ;; Similarly, important messages may be redirected to a more visible
 ;; form:
 ;;
 ;;     (defadvice an-important-function (around an-important-function activate)
-;;        (flet ((message (&rest args)
-;;                        (apply 'alert-message-notify args)))
-;;          ad-do-it))
+;;       (alert-with-message-notify
+;;         ad-do-it))
 ;;
 ;; To use `alert', place the alert.el library somewhere Emacs can find
 ;; it, and add the following to your ~/.emacs file:
@@ -106,6 +117,9 @@
 ;; Bugs
 ;;
 ;;     Soft dependency on unpublished popup-volatile.
+;;
+;;     `message' is a subr.  Macros such as `alert-with-message-logonly'
+;;     will only affect calls to `message' from Lisp.
 ;;
 ;; TODO
 ;;
@@ -151,8 +165,11 @@
 
 ;;; requires
 
-;; for callf, callf2, assert
-(require 'cl)
+(eval-and-compile
+  ;; for callf, callf2, assert, flet/cl-flet
+  (require 'cl)
+  (unless (fboundp 'cl-flet)
+    (defalias 'cl-flet 'flet)))
 
 (autoload 'notify            "notify"         "Notify TITLE, BODY via `notify-method'.")
 (autoload 'todochiku-message "todochiku"      "Send a message via growl, snarl, etc.")
@@ -228,10 +245,12 @@ The following aliases will be installed:
       ((and (numberp arg)
             (< arg 0))
        (dolist (sym syms)
-         (fmakunbound (intern (format "message-%s" sym)))))
+         (fmakunbound (intern (format "message-%s" sym)))
+         (fmakunbound (intern (format "with-message-%s" sym)))))
       (t
        (dolist (sym syms)
-         (defalias (intern (format "message-%s" sym)) (intern (format "alert-message-%s" sym))))))))
+         (defalias (intern (format "message-%s" sym)) (intern (format "alert-message-%s" sym)))
+         (defalias (intern (format "with-message-%s" sym)) (intern (format "alert-with-message-%s" sym))))))))
 
 ;;;###autoload
 (when alert-install-short-aliases
@@ -501,6 +520,101 @@ The following forms using `message` and `alert` are equivalent:
           (alert-message-temp colored-content)
         (alert-message-noformat colored-content))))
   content)
+
+;;;###autoload
+(defmacro alert-with-message-logonly (&rest body)
+  "Execute BODY, redirecting the output of `message' to the log only.
+
+Note that since `message' is a subr, only calls to `message' from
+Lisp will be affected."
+  (declare (indent 0) (debug t))
+  `(cl-flet ((message (&rest args)
+                      (apply 'alert-message-logonly args)))
+     ,@body))
+
+;;;###autoload
+(defmacro alert-with-message-nolog (&rest body)
+  "Execute BODY, keeping the output of `message' from being added to the log.
+
+Note that since `message' is a subr, only calls to `message' from
+Lisp will be affected."
+  (declare (indent 0) (debug t))
+  `(cl-flet ((message (&rest args)
+                      (apply 'alert-message-nolog args)))
+     ,@body))
+
+;;;###autoload
+(defmacro alert-with-message-highlight (&rest body)
+  "Execute BODY, highlighting the output of `message'.
+
+Note that since `message' is a subr, only calls to `message' from
+Lisp will be affected."
+  (declare (indent 0) (debug t))
+  `(cl-flet ((message (&rest args)
+                      (apply 'alert-message-highlight args)))
+     ,@body))
+
+;;;###autoload
+(defmacro alert-with-message-notify (&rest body)
+  "Execute BODY, redirecting the output of `message' to system notifications.
+
+notify.el or todochiku.el may be used to provide the interface to
+system notifications.
+
+Note that since `message' is a subr, only calls to `message' from
+Lisp will be affected."
+  (declare (indent 0) (debug t))
+  `(cl-flet ((message (&rest args)
+                      (apply 'alert-message-notify args)))
+     ,@body))
+
+;;;###autoload
+(defmacro alert-with-message-popup (&rest body)
+  "Execute BODY, redirecting the output of `message' to popups.
+
+popup.el is required.
+
+Note that since `message' is a subr, only calls to `message' from
+Lisp will be affected."
+  (declare (indent 0) (debug t))
+  `(cl-flet ((message (&rest args)
+                      (apply 'alert-message-popup args)))
+     ,@body))
+
+;;;###autoload
+(defmacro alert-with-message-insert (&rest body)
+  "Execute BODY, redirecting the output of `message' to `insert'.
+
+Note that since `message' is a subr, only calls to `message' from
+Lisp will be affected."
+  (declare (indent 0) (debug t))
+  `(cl-flet ((message (&rest args)
+                      (apply 'alert-message-insert args)))
+     ,@body))
+
+;;;###autoload
+(defmacro alert-with-message-temp (&rest body)
+  "Execute BODY, making all `message' output temporary.
+
+Note that since `message' is a subr, only calls to `message' from
+Lisp will be affected."
+  (declare (indent 0) (debug t))
+  `(cl-flet ((message (&rest args)
+                      (apply 'alert-message-temp args)))
+     ,@body))
+
+;;;###autoload
+(defmacro alert-with-message-noformat (&rest body)
+  "Execute BODY, keeping `message' from formatting its arguments.
+
+All arguments to `message' after the first one will be dropped.
+
+Note that since `message' is a subr, only calls to `message' from
+Lisp will be affected."
+  (declare (indent 0) (debug t))
+  `(cl-flet ((message (&rest args)
+                      (apply 'alert-message-noformat args)))
+     ,@body))
 
 (provide 'alert)
 
