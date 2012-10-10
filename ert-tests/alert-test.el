@@ -3,12 +3,14 @@
 
 (when load-file-name
   (setq package-enable-at-startup nil)
-  (setq package-load-list '((string-utils t)
+  (setq package-load-list '((list-utils t)
+                            (string-utils t)
                             (notify t)
                             (popup t)))
   (when (fboundp 'package-initialize)
     (package-initialize)))
 
+(require 'list-utils)
 (require 'string-utils)
 (require 'notify)
 (require 'popup)
