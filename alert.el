@@ -456,7 +456,9 @@ ARGS are as for `message', including a format-string."
 (defun alert (content &optional quiet seconds nocolor log notify popup)
   "Transiently and noticeably display CONTENT in the echo area.
 
-CONTENT should be a pre-formatted string.
+CONTENT should be a pre-`format'ted if it is a string.
+
+CONTENT will be coerced to a string if it is not a string.
 
 Optional QUIET suppresses the bell, which is on by default.
 
@@ -489,6 +491,8 @@ The behavior of `alert' is very different from `message':
 
   - CONTENT must already be formatted.
 
+  - Non-strings are accepted for CONTENT.
+
   - The content is displayed with added color.
 
   - The bell is rung.
@@ -502,6 +506,11 @@ The following forms using `message` and `alert` are equivalent:
 
    (message \"hello, %s\" name)
    (alert (format \"hello, %s\" name) 'quiet 0 'nocolor 'log)"
+  (unless (stringp content)
+    (if (fboundp 'string-utils-stringify-anything)
+        (callf string-utils-stringify-anything content)
+      ;; else
+      (callf2 format "%s" content)))
   (let ((alert-message-seconds alert-message-seconds)
         (message-log-max message-log-max)
         (colored-content content)
