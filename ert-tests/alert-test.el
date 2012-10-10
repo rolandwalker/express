@@ -514,6 +514,29 @@
 ;;      (setq cursor-in-echo-area t)
 ;;      (y-or-n-p "Did that work as expected?"))))
 
+(ert-deftest alert-13 nil
+  :tags '(:interactive)
+  (should
+   (let ((cursor-in-echo-area t))
+     (read-char "Press a key to generate an alert which stringifies a number")
+     (setq cursor-in-echo-area nil)
+     (alert 3.14159)
+     (sleep-for 1)
+     (setq cursor-in-echo-area t)
+     (y-or-n-p "Did that work as expected?"))))
+
+(ert-deftest alert-14 nil
+  "Test CL form"
+  :tags '(:interactive)
+  (should
+   (let ((cursor-in-echo-area t))
+     (read-char "Press a key to generate an alert which appears without color")
+     (setq cursor-in-echo-area nil)
+     (alert* "alert without color" :nocolor t)
+     (sleep-for 1)
+     (setq cursor-in-echo-area t)
+     (y-or-n-p "Did that work as expected?"))))
+
 
 ;;
 ;; Emacs
