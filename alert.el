@@ -548,6 +548,14 @@ The following forms using `message` and `alert` are equivalent:
   content)
 
 ;;;###autoload
+(defun* alert* (content &key quiet seconds nocolor log notify popup)
+  "An alternate version of `alert' which uses Common Lisp semantics.
+
+CONTENT, QUIET, SECONDS, NOCOLOR, LOG, NOTIFY, and POPUP are as
+documented for `alert'."
+  (alert content quiet seconds nocolor log notify popup))
+
+;;;###autoload
 (defmacro alert-with-message-logonly (&rest body)
   "Execute BODY, redirecting the output of `message' to the log only.
 
