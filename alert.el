@@ -175,7 +175,9 @@
   ;; for callf, callf2, assert, flet/cl-flet
   (require 'cl)
   (unless (fboundp 'cl-flet)
-    (defalias 'cl-flet 'flet)))
+    (defalias 'cl-flet 'flet)
+    (put 'cl-flet 'lisp-indent-function 1)
+    (put 'cl-flet 'edebug-form-spec '((&rest (defun*)) cl-declarations body))))
 
 (autoload 'notify            "notify"         "Notify TITLE, BODY via `notify-method'.")
 (autoload 'todochiku-message "todochiku"      "Send a message via growl, snarl, etc.")
