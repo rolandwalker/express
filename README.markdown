@@ -18,8 +18,8 @@ Quickstart
   (do-something-noisy))
 ```
 
-alert
------
+Explanation
+-----------
 
 Alert.el provides alternatives to Emacs' built-in `message` function.
 
@@ -37,14 +37,22 @@ format string.  This flexible syntax obviates any arguments to control
 the *behavior* of `message`.
 
 `Alert`, by contrast, takes as its first argument a preformatted
-string, followed by a number of optional arguments to control
-its behavior.  The full argument spec is:
+value to display.  Subsequent arguments control its behavior.
+
+function `alert`
+----------------
+
+The full argument spec for the `alert` function is:
 
 	CONTENT &optional QUIET SECONDS NOCOLOR LOG NOTIFY POPUP
 
-`Alert` transiently and noticeably displays CONTENT in the echo area.
+The docstring is included here:
 
-CONTENT should be a pre-formatted string.
+Transiently and noticeably display CONTENT in the echo area.
+
+CONTENT should be a pre-`format`ted if it is a string.
+
+CONTENT will be coerced to a string if it is not a string.
 
 Optional QUIET suppresses the bell, which is on by default.
 
@@ -76,6 +84,8 @@ The behavior of `alert` is very different from `message`:
 
 * CONTENT must already be formatted.
 
+* Non-strings are accepted for CONTENT.
+
 * The content is displayed with added color.
 
 * The bell is rung.
@@ -92,8 +102,18 @@ The following forms using `message` and `alert` are equivalent:
 (alert (format "hello, %s" name) 'quiet 0 'nocolor 'log)
 ```
 
-message alternatives
---------------------
+function `alert*`
+-----------------
+
+The variant function `alert*` has identical functionality to `alert`
+but takes CL-style arguments:
+
+```lisp
+(alert* "hello :quiet 0)
+```
+
+`message` alternatives
+----------------------
 
 The following functions provided by this library are drop-in
 alternatives to `message` which may be useful in an `flet`
@@ -155,8 +175,8 @@ Running `alert-install-aliases` or setting the corresponding
 variable in customize will install convenience aliases outside
 the `alert-` namespace.  This is disabled by default.
 
-The function `message-noformat` is also available, but it is
-not quite a drop-in replacement for `message`.
+The function `aler-message-noformat` is also available, but it
+is not quite a drop-in replacement for `message`.
 
 Some of the functions require the availability of [notify.el](http://emacswiki.org/emacs/notify.el), [todochiku.el](http://www.emacswiki.org/emacs/ToDoChiKu),
 or [popup.el](http://github.com/auto-complete/popup-el).  In all cases, the function will

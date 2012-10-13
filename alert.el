@@ -36,9 +36,10 @@
 ;; in their ~/.emacs files (see below).
 ;;
 ;; The principal `alert' function by default works differently from
-;; `message' in almost every respect, displaying with sound and
-;; visual highlight, and not writing to the log.  See the `alert'
-;; docstring for details.
+;; `message' in almost every respect, displaying with sound and visual
+;; highlight, and not writing to the log.  See the `alert' docstring
+;; for details.  The variant function `alert*' has identical
+;; functionality, but accepts CL-style arguments.
 ;;
 ;; The following functions provided by this library are drop-in
 ;; alternatives to `message' which may be useful in an `flet'
@@ -102,8 +103,8 @@
 ;;
 ;; Notes
 ;;
-;;     The function `message-noformat' is also available, but it is
-;;     not quite a drop-in replacement for `message'.
+;;     The function `alert-message-noformat' is also available, but it
+;;     is not quite a drop-in replacement for `message'.
 ;;
 ;;     Some of the functions require the availability of notify.el,
 ;;     todochiku.el or popup.el.  In all cases, the function will
