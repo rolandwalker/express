@@ -228,8 +228,8 @@
 
 ;;;###autoload
 (progn
-(defun alert-install-aliases (&optional arg)
-  "Install aliases outside the \"alert-\" namespace.
+  (defun alert-install-aliases (&optional arg)
+    "Install aliases outside the \"alert-\" namespace.
 
 With optional negative ARG, uninstall aliases.
 
@@ -243,21 +243,21 @@ The following aliases will be installed:
    message-notify     for   alert-message-notify
    message-popup      for   alert-message-popup
    message-temp       for   alert-message-temp"
-  (let ((syms '(
-                nolog
-                logonly
-                highlight
-                insert
-                noformat
-                notify
-                popup
-                temp
-                string
-                )))
-    (cond
-      ((and (numberp arg)
-            (< arg 0))
-       (dolist (sym syms)
+    (let ((syms '(
+                  nolog
+                  logonly
+                  highlight
+                  insert
+                  noformat
+                  notify
+                  popup
+                  temp
+                  string
+                  )))
+      (cond
+        ((and (numberp arg)
+              (< arg 0))
+         (dolist (sym syms)
            (when (ignore-errors
                    (eq (symbol-function (intern-soft (format "message-%s" sym)))
                                         (intern-soft (format "alert-message-%s" sym))))
@@ -266,9 +266,9 @@ The following aliases will be installed:
                    (eq (symbol-function (intern-soft (format "with-message-%s" sym)))
                                         (intern-soft (format "alert-with-message-%s" sym))))
              (fmakunbound (intern (format "with-message-%s" sym))))))
-      (t
-       (dolist (sym syms)
-         (defalias (intern (format "message-%s" sym)) (intern (format "alert-message-%s" sym)))
+        (t
+         (dolist (sym syms)
+           (defalias (intern (format "message-%s" sym)) (intern (format "alert-message-%s" sym)))
            (defalias (intern (format "with-message-%s" sym)) (intern (format "alert-with-message-%s" sym)))))))))
 
 ;;;###autoload
