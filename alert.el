@@ -255,8 +255,14 @@ The following aliases will be installed:
       ((and (numberp arg)
             (< arg 0))
        (dolist (sym syms)
-         (fmakunbound (intern (format "message-%s" sym)))
-         (fmakunbound (intern (format "with-message-%s" sym)))))
+           (when (ignore-errors
+                   (eq (symbol-function (intern-soft (format "message-%s" sym)))
+                                        (intern-soft (format "alert-message-%s" sym))))
+             (fmakunbound (intern (format "message-%s" sym))))
+           (when (ignore-errors
+                   (eq (symbol-function (intern-soft (format "with-message-%s" sym)))
+                                        (intern-soft (format "alert-with-message-%s" sym))))
+             (fmakunbound (intern (format "with-message-%s" sym))))))
       (t
        (dolist (sym syms)
          (defalias (intern (format "message-%s" sym)) (intern (format "alert-message-%s" sym)))
