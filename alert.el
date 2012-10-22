@@ -292,12 +292,13 @@ already existing properties are respected."
 ;;; utility functions
 
 ;;;###autoload
-(defun alert-message-noformat (content &rest args)
+(defun alert-message-noformat (content &rest _ignored)
   "An alternative for `message' which assumes a pre-formatted CONTENT string.
 
-ARGS are ignored, meaning this is not functionally equivalent to `message'.
-However, flet'ing `message' to this function is safe in the sense that
-it does not call `message' directly."
+Any arguments after CONTENT are ignored, meaning this is not
+functionally equivalent to `message'.  However, flet'ing
+`message' to this function is safe in the sense that it does not
+call `message' directly."
   (if (null content)
       (alert-message content)
     ;; else
