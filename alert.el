@@ -225,6 +225,7 @@
 (fset 'alert-message (symbol-function 'message))
 
 ;;;###autoload
+(progn
 (defun alert-install-aliases (&optional arg)
   "Install aliases outside the \"alert-\" namespace.
 
@@ -266,7 +267,7 @@ The following aliases will be installed:
       (t
        (dolist (sym syms)
          (defalias (intern (format "message-%s" sym)) (intern (format "alert-message-%s" sym)))
-         (defalias (intern (format "with-message-%s" sym)) (intern (format "alert-with-message-%s" sym))))))))
+           (defalias (intern (format "with-message-%s" sym)) (intern (format "alert-with-message-%s" sym)))))))))
 
 ;;;###autoload
 (when alert-install-short-aliases
