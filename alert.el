@@ -170,7 +170,7 @@
 ;;; Code:
 ;;
 
-;;; requires
+;;; requirements
 
 (eval-and-compile
   ;; for callf, callf2, assert, flet/cl-flet
@@ -186,6 +186,8 @@
 (autoload 'popup-volatile    "popup-volatile" "Create a volatile tooltip using `popup-tip'.")
 
 (require 'string-utils nil t)
+
+;;; declarations
 
 (declare-function string-utils-propertize-fillin "string-utils.el")
 (declare-function alert-message                  "alert.el")
