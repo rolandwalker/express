@@ -82,7 +82,7 @@ non-nil value, the popup will be used in addition to the echo area.
 
 The behavior of `alert` is very different from `message`:
 
-* CONTENT must already be formatted.
+* String CONTENT must already be passed through `format`.
 
 * Non-strings are accepted for CONTENT.
 
@@ -109,7 +109,7 @@ The variant function `alert*` has identical functionality to `alert`
 but takes CL-style arguments:
 
 ```lisp
-(alert* "hello :quiet 0)
+(alert* "hello" :quiet 0)
 ```
 
 `message` alternatives
@@ -175,7 +175,7 @@ Running `alert-install-aliases` or setting the corresponding
 variable in customize will install convenience aliases outside
 the `alert-` namespace.  This is disabled by default.
 
-The function `aler-message-noformat` is also available, but it
+The function `alert-message-noformat` is also available, but it
 is not quite a drop-in replacement for `message`.
 
 Some of the functions require the availability of [notify.el](http://emacswiki.org/emacs/notify.el), [todochiku.el](http://www.emacswiki.org/emacs/ToDoChiKu),
