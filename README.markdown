@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/rolandwalker/alert.png)](http://travis-ci.org/rolandwalker/alert)
+[![Build Status](https://secure.travis-ci.org/rolandwalker/alert.png?branch=master)](http://travis-ci.org/rolandwalker/alert)
 
 Overview
 ========
