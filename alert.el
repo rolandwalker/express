@@ -173,12 +173,12 @@
 ;;; requirements
 
 (eval-and-compile
-  ;; for callf, callf2, assert, flet/cl-flet
+  ;; for callf, callf2, assert, flet/cl-flet*
   (require 'cl)
-  (unless (fboundp 'cl-flet)
-    (defalias 'cl-flet 'flet)
-    (put 'cl-flet 'lisp-indent-function 1)
-    (put 'cl-flet 'edebug-form-spec '((&rest (defun*)) cl-declarations body))))
+  (unless (fboundp 'cl-flet*)
+    (defalias 'cl-flet* 'flet)
+    (put 'cl-flet* 'lisp-indent-function 1)
+    (put 'cl-flet* 'edebug-form-spec '((&rest (defun*)) cl-declarations body))))
 
 (autoload 'notify            "notify"         "Notify TITLE, BODY via `notify-method'.")
 (autoload 'todochiku-message "todochiku"      "Send a message via growl, snarl, etc.")
@@ -575,8 +575,8 @@ documented for `alert'."
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet ((message (&rest args)
-                      (apply 'alert-message-logonly args)))
+  `(cl-flet* ((message (&rest args)
+                       (apply 'alert-message-logonly args)))
      ,@body))
 
 ;;;###autoload
@@ -586,8 +586,8 @@ Lisp will be affected."
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet ((message (&rest args)
-                      (apply 'alert-message-nolog args)))
+  `(cl-flet* ((message (&rest args)
+                       (apply 'alert-message-nolog args)))
      ,@body))
 
 ;;;###autoload
@@ -597,8 +597,8 @@ Lisp will be affected."
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet ((message (&rest args)
-                      (apply 'alert-message-highlight args)))
+  `(cl-flet* ((message (&rest args)
+                       (apply 'alert-message-highlight args)))
      ,@body))
 
 ;;;###autoload
@@ -611,8 +611,8 @@ system notifications.
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet ((message (&rest args)
-                      (apply 'alert-message-notify args)))
+  `(cl-flet* ((message (&rest args)
+                       (apply 'alert-message-notify args)))
      ,@body))
 
 ;;;###autoload
@@ -624,8 +624,8 @@ popup.el is required.
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet ((message (&rest args)
-                      (apply 'alert-message-popup args)))
+  `(cl-flet* ((message (&rest args)
+                       (apply 'alert-message-popup args)))
      ,@body))
 
 ;;;###autoload
@@ -635,8 +635,8 @@ Lisp will be affected."
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet ((message (&rest args)
-                      (apply 'alert-message-insert args)))
+  `(cl-flet* ((message (&rest args)
+                       (apply 'alert-message-insert args)))
      ,@body))
 
 ;;;###autoload
@@ -650,8 +650,8 @@ Lisp will be affected."
   (declare (indent 0) (debug t))
   (let ((output (gensym "--with-message-string--")))
     `(let ((,output ""))
-       (cl-flet ((message (&rest args)
-                          (callf concat ,output (apply 'alert-message-string args))))
+       (cl-flet* ((message (&rest args)
+                           (callf concat ,output (apply 'alert-message-string args))))
          ,@body)
        ,output)))
 
@@ -662,8 +662,8 @@ Lisp will be affected."
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet ((message (&rest args)
-                      (apply 'alert-message-temp args)))
+  `(cl-flet* ((message (&rest args)
+                       (apply 'alert-message-temp args)))
      ,@body))
 
 ;;;###autoload
@@ -675,8 +675,8 @@ All arguments to `message' after the first one will be dropped.
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet ((message (&rest args)
-                      (apply 'alert-message-noformat args)))
+  `(cl-flet* ((message (&rest args)
+                       (apply 'alert-message-noformat args)))
      ,@body))
 
 (provide 'alert)
