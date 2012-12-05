@@ -198,7 +198,9 @@
 (defgroup alert nil
   "Alternatives to `message'."
   :version "0.5.10"
-  :link '(emacs-commentary-link "alert")
+  :link '(emacs-commentary-link :tag "Commentary" "alert")
+  :link '(url-link :tag "Github" "http://github.com/rolandwalker/alert")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/Alert")
   :prefix "alert-"
   :group 'extensions)
 
