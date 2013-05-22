@@ -130,6 +130,12 @@
 ;;
 ;; TODO
 ;;
+;;     Aliases are not turning on from customize setting alone.  The
+;;     variable alert-install-short-aliases does not seem to be
+;;     set after loading `custom-file'.
+;;
+;;     Truncation options based on string-utils.el
+;;
 ;;     Default icons and timeouts for notifications.
 ;;
 ;;; License
