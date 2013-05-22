@@ -1,13 +1,13 @@
-;;; alert.el --- Alternatives to `message'
+;;; express.el --- Alternatives to `message'
 ;;
 ;; Copyright (c) 2012 Roland Walker
 ;;
 ;; Author: Roland Walker <walker@pobox.com>
-;; Homepage: http://github.com/rolandwalker/alert
-;; URL: http://raw.github.com/rolandwalker/alert/master/alert.el
-;; Version: 0.5.10
-;; Last-Updated: 22 Oct 2012
-;; EmacsWiki: Alert
+;; Homepage: http://github.com/rolandwalker/express
+;; URL: http://raw.github.com/rolandwalker/express/master/express.el
+;; Version: 0.5.12
+;; Last-Updated: 22 May 2013
+;; EmacsWiki: Express
 ;; Keywords: extensions, message, interface
 ;; Package-Requires: ((string-utils "0.0.2"))
 ;;
@@ -17,17 +17,17 @@
 ;;
 ;; Quickstart
 ;;
-;;     (require 'alert)
-;;     (alert-install-aliases)
+;;     (require 'express)
+;;     (express-install-aliases)
 ;;
-;;     (alert "important message")
+;;     (express "important message")
 ;;
 ;;     (with-message-logonly
 ;;       (do-something-noisy))
 ;;
 ;; Explanation
 ;;
-;; Alert.el provides alternatives to Emacs' built-in `message'
+;; Express.el provides alternatives to Emacs' built-in `message'
 ;; function.
 ;;
 ;; This library is generally only useful when programming in Emacs
@@ -35,75 +35,75 @@
 ;; messaging, especially for the case of quietening chatty libraries
 ;; in their ~/.emacs files (see below).
 ;;
-;; The principal `alert' function by default works differently from
+;; The principal `express' function by default works differently from
 ;; `message' in almost every respect, displaying with sound and visual
-;; highlight, and not writing to the log.  See the `alert' docstring
-;; for details.  The variant function `alert*' has identical
+;; highlight, and not writing to the log.  See the `express' docstring
+;; for details.  The variant function `express*' has identical
 ;; functionality, but accepts CL-style arguments.
 ;;
 ;; The following functions provided by this library are drop-in
 ;; alternatives to `message' which may be useful in an `flet'
 ;; construct:
 ;;
-;;     `alert-message-nolog'
-;;     `alert-message-logonly'
-;;     `alert-message-highlight'
-;;     `alert-message-insert'
-;;     `alert-message-notify'
-;;     `alert-message-popup'
-;;     `alert-message-temp'
-;;     `alert-message-string'
+;;     `express-message-nolog'
+;;     `express-message-logonly'
+;;     `express-message-highlight'
+;;     `express-message-insert'
+;;     `express-message-notify'
+;;     `express-message-popup'
+;;     `express-message-temp'
+;;     `express-message-string'
 ;;
 ;; The following macros modify the behavior of `message' within
 ;; the enclosing expression:
 ;;
-;;     `alert-with-message-nolog'
-;;     `alert-with-message-logonly'
-;;     `alert-with-message-highlight'
-;;     `alert-with-message-insert'
-;;     `alert-with-message-notify'
-;;     `alert-with-message-popup'
-;;     `alert-with-message-temp'
-;;     `alert-with-message-string'
+;;     `express-with-message-nolog'
+;;     `express-with-message-logonly'
+;;     `express-with-message-highlight'
+;;     `express-with-message-insert'
+;;     `express-with-message-notify'
+;;     `express-with-message-popup'
+;;     `express-with-message-temp'
+;;     `express-with-message-string'
 ;;
 ;; For example, the following code would redirect messages from a very
 ;; chatty library to the log:
 ;;
-;;     (alert-with-message-nolog
+;;     (express-with-message-nolog
 ;;       (require 'very-chatty-library))
 ;;
 ;; The same method may also be handy with `defadvice':
 ;;
 ;;     (defadvice very-chatty-function (around very-chatty-redirect activate)
-;;       (alert-with-message-nolog
+;;       (express-with-message-nolog
 ;;         ad-do-it))
 ;;
 ;; Similarly, important messages may be redirected to a more visible
 ;; form:
 ;;
 ;;     (defadvice an-important-function (around an-important-function activate)
-;;       (alert-with-message-notify
+;;       (express-with-message-notify
 ;;         ad-do-it))
 ;;
-;; To use `alert', place the alert.el library somewhere Emacs can find
+;; To use `express', place the express.el library somewhere Emacs can find
 ;; it, and add the following to your ~/.emacs file:
 ;;
-;;     (require 'alert)
-;;     (alert-install-aliases)     ; optionally, can also be set in customize
+;;     (require 'express)
+;;     (express-install-aliases)     ; optionally, can also be set in customize
 ;;
-;; Running `alert-install-aliases' or setting the corresponding
+;; Running `express-install-aliases' or setting the corresponding
 ;; variable in customize will install convenience aliases outside
-;; the "alert-" namespace.  This is disabled by default.
+;; the "express-" namespace.  This is disabled by default.
 ;;
 ;; See Also
 ;;
-;;     M-x customize-group RET alert RET
+;;     M-x customize-group RET express RET
 ;;     M-x customize-group RET notify RET
 ;;     M-x customize-group RET popup RET
 ;;
 ;; Notes
 ;;
-;;     The function `alert-message-noformat' is also available, but it
+;;     The function `express-message-noformat' is also available, but it
 ;;     is not quite a drop-in replacement for `message'.
 ;;
 ;;     Some of the functions require the availability of notify.el,
@@ -125,13 +125,13 @@
 ;;
 ;;     Soft dependency on unpublished popup-volatile.
 ;;
-;;     `message' is a subr.  Macros such as `alert-with-message-logonly'
+;;     `message' is a subr.  Macros such as `express-with-message-logonly'
 ;;     will only affect calls to `message' from Lisp.
 ;;
 ;; TODO
 ;;
 ;;     Aliases are not turning on from customize setting alone.  The
-;;     variable alert-install-short-aliases does not seem to be
+;;     variable express-install-short-aliases does not seem to be
 ;;     set after loading `custom-file'.
 ;;
 ;;     Truncation options based on string-utils.el
@@ -196,61 +196,61 @@
 ;;; declarations
 
 (declare-function string-utils-propertize-fillin "string-utils.el")
-(declare-function alert-message                  "alert.el")
+(declare-function express-message                "express.el")
 
 ;;; customizable variables
 
 ;;;###autoload
-(defgroup alert nil
+(defgroup express nil
   "Alternatives to `message'."
-  :version "0.5.10"
-  :link '(emacs-commentary-link :tag "Commentary" "alert")
-  :link '(url-link :tag "Github" "http://github.com/rolandwalker/alert")
-  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/Alert")
-  :prefix "alert-"
+  :version "0.5.12"
+  :link '(emacs-commentary-link :tag "Commentary" "express")
+  :link '(url-link :tag "Github" "http://github.com/rolandwalker/express")
+  :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/Express")
+  :prefix "express-"
   :group 'extensions)
 
-(defcustom alert-message-seconds 2
-  "Default period to display alert messages."
+(defcustom express-message-seconds 2
+  "Default period to display express messages."
   :type 'integer
-  :group 'alert)
+  :group 'express)
 
-(defcustom alert-message-notify-title "Emacs"
-  "Default title for messages presented by `alert-message-notify'."
+(defcustom express-message-notify-title "Emacs"
+  "Default title for messages presented by `express-message-notify'."
   :type 'integer
-  :group 'alert)
+  :group 'express)
 
-(defcustom alert-face 'highlight
-  "Face to use for highlighting alert messages."
-  :group 'alert)
+(defcustom express-face 'highlight
+  "Face to use for highlighting express messages."
+  :group 'express)
 
 ;;;###autoload
-(defcustom alert-install-short-aliases nil
-  "Install short aliases such as `message-nolog' for `alert-message-nolog'."
+(defcustom express-install-short-aliases nil
+  "Install short aliases such as `message-nolog' for `express-message-nolog'."
   :type 'boolean
-  :group 'alert)
+  :group 'express)
 
 ;;; aliases and fsets
 
-(fset 'alert-message (symbol-function 'message))
+(fset 'express-message (symbol-function 'message))
 
 ;;;###autoload
 (progn
-  (defun alert-install-aliases (&optional arg)
-    "Install aliases outside the \"alert-\" namespace.
+  (defun express-install-aliases (&optional arg)
+    "Install aliases outside the \"express-\" namespace.
 
 With optional negative ARG, uninstall aliases.
 
 The following aliases will be installed:
 
-   message-nolog      for   alert-message-nolog
-   message-logonly    for   alert-message-logonly
-   message-noformat   for   alert-message-noformat
-   message-highlight  for   alert-message-highlight
-   message-insert     for   alert-message-insert
-   message-notify     for   alert-message-notify
-   message-popup      for   alert-message-popup
-   message-temp       for   alert-message-temp"
+   message-nolog      for   express-message-nolog
+   message-logonly    for   express-message-logonly
+   message-noformat   for   express-message-noformat
+   message-highlight  for   express-message-highlight
+   message-insert     for   express-message-insert
+   message-notify     for   express-message-notify
+   message-popup      for   express-message-popup
+   message-temp       for   express-message-temp"
     (let ((syms '(
                   nolog
                   logonly
@@ -268,20 +268,20 @@ The following aliases will be installed:
          (dolist (sym syms)
            (when (ignore-errors
                    (eq (symbol-function (intern-soft (format "message-%s" sym)))
-                                        (intern-soft (format "alert-message-%s" sym))))
+                                        (intern-soft (format "express-message-%s" sym))))
              (fmakunbound (intern (format "message-%s" sym))))
            (when (ignore-errors
                    (eq (symbol-function (intern-soft (format "with-message-%s" sym)))
-                                        (intern-soft (format "alert-with-message-%s" sym))))
+                                        (intern-soft (format "express-with-message-%s" sym))))
              (fmakunbound (intern (format "with-message-%s" sym))))))
         (t
          (dolist (sym syms)
-           (defalias (intern (format "message-%s" sym)) (intern (format "alert-message-%s" sym)))
-           (defalias (intern (format "with-message-%s" sym)) (intern (format "alert-with-message-%s" sym)))))))))
+           (defalias (intern (format "message-%s" sym)) (intern (format "express-message-%s" sym)))
+           (defalias (intern (format "with-message-%s" sym)) (intern (format "express-with-message-%s" sym)))))))))
 
 ;;;###autoload
-(when alert-install-short-aliases
-  (alert-install-aliases))
+(when express-install-short-aliases
+  (express-install-aliases))
 
 ;;; compatibility functions
 
@@ -302,7 +302,7 @@ already existing properties are respected."
 ;;; utility functions
 
 ;;;###autoload
-(defun alert-message-noformat (content &rest _ignored)
+(defun express-message-noformat (content &rest _ignored)
   "An alternative for `message' which assumes a pre-formatted CONTENT string.
 
 Any arguments after CONTENT are ignored, meaning this is not
@@ -310,28 +310,28 @@ functionally equivalent to `message'.  However, flet'ing
 `message' to this function is safe in the sense that it does not
 call `message' directly."
   (if (null content)
-      (alert-message content)
+      (express-message content)
     ;; else
     (assert (stringp content) nil "CONTENT must be a string")
-    (alert-message (replace-regexp-in-string "%" "%%" content))))
+    (express-message (replace-regexp-in-string "%" "%%" content))))
 
-(defun alert-message-maybe-formatted (&rest args)
-  "Dispatch `message' according to the variable `alert-message-preformatted'.
+(defun express-message-maybe-formatted (&rest args)
+  "Dispatch `message' according to the variable `express-message-preformatted'.
 
-Formatting is not performed if `alert-message-preformatted' is
+Formatting is not performed if `express-message-preformatted' is
 bound and non-nil.
 
 When formatting is performed, ARGS are treated as for `message', including
 a format-string.  When formatting is not performed, only the first element
 of ARGS is respected.  It should be a pre-formatted string."
-    (if (and (boundp 'alert-message-preformatted)
-             alert-message-preformatted)
-        (apply 'alert-message-noformat args)
+    (if (and (boundp 'express-message-preformatted)
+             express-message-preformatted)
+        (apply 'express-message-noformat args)
       ;; else
-      (apply 'alert-message args)))
+      (apply 'express-message args)))
 
-(defun alert--message-insert-1 (msg)
-  "Internal driver for `alert-message-insert'.
+(defun express--message-insert-1 (msg)
+  "Internal driver for `express-message-insert'.
 
 Inserts pre-formatted MSG at the current position with line feeds as needed."
   (unless (eq (line-beginning-position) (point))
@@ -341,7 +341,7 @@ Inserts pre-formatted MSG at the current position with line feeds as needed."
     (insert "\n")))
 
 ;;;###autoload
-(defun alert-message-logonly (&rest args)
+(defun express-message-logonly (&rest args)
   "An flet'able replacement for `message' which logs but does not echo.
 
 ARGS are as for `message', including a format-string."
@@ -352,63 +352,63 @@ ARGS are as for `message', including a format-string."
         (with-current-buffer "*Messages*"
           (save-excursion
             (goto-char (point-max))
-            (let ((msg (if (and (boundp 'alert-message-preformatted)
-                                alert-message-preformatted)
+            (let ((msg (if (and (boundp 'express-message-preformatted)
+                                express-message-preformatted)
                            (car args)
                          (apply 'format args))))
-              (alert--message-insert-1 msg)
+              (express--message-insert-1 msg)
               msg)))
       ;; else
       (let ((current-msg (current-message)))
-        (apply 'alert-message-maybe-formatted args)
-        (alert-message current-msg)))))
+        (apply 'express-message-maybe-formatted args)
+        (express-message current-msg)))))
 
 ;;;###autoload
-(defun alert-message-insert (&rest args)
+(defun express-message-insert (&rest args)
   "An flet'able replacement for `message' which inserts text instead of echoing.
 
 ARGS are as for `message', including a format-string."
-  (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args)))
-        (alert-message-preformatted t))
-    (alert-message-logonly msg)
-    (alert--message-insert-1 msg)
+  (let ((msg (if (and (boundp 'express-message-preformatted) express-message-preformatted) (car args) (apply 'format args)))
+        (express-message-preformatted t))
+    (express-message-logonly msg)
+    (express--message-insert-1 msg)
     msg))
 
 ;;;###autoload
-(defun alert-message-string (&rest args)
+(defun express-message-string (&rest args)
   "An flet'able replacement for `message' which returns a string instead of echoing.
 
 Newline is appended to the return value as with `message'.
 
 ARGS are as for `message', including a format-string."
-  (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args))))
+  (let ((msg (if (and (boundp 'express-message-preformatted) express-message-preformatted) (car args) (apply 'format args))))
     (concat msg "\n")))
 
 ;;;###autoload
-(defun alert-message-nolog (&rest args)
+(defun express-message-nolog (&rest args)
   "An flet'able replacement for `message' which echos but does not log.
 
 ARGS are as for `message', including a format-string."
   (let ((message-log-max nil))
-    (apply 'alert-message-maybe-formatted args)))
+    (apply 'express-message-maybe-formatted args)))
 
 ;;;###autoload
-(defun alert-message-temp (&rest args)
+(defun express-message-temp (&rest args)
   "An flet'able replacement for `message' which displays temporarily.
 
-The display time is governed by `alert-message-seconds'.
+The display time is governed by `express-message-seconds'.
 
 ARGS are as for `message', including a format-string."
   (when (car args)
     (let ((current-msg (current-message))
-          (retval (apply 'alert-message-maybe-formatted args)))
-      (when (numberp alert-message-seconds)
-        (sit-for alert-message-seconds))
-      (alert-message (or current-msg ""))
+          (retval (apply 'express-message-maybe-formatted args)))
+      (when (numberp express-message-seconds)
+        (sit-for express-message-seconds))
+      (express-message (or current-msg ""))
       retval)))
 
 ;;;###autoload
-(defun alert-message-popup (&rest args)
+(defun express-message-popup (&rest args)
   "An flet'able replacement for `message' which uses popups instead of echoing.
 
 The functions `popup-volatile' and `popup' are attempted in
@@ -416,9 +416,9 @@ order to create a popup.  If both functions fail, the message
 content will appear in the echo area as usual.
 
 ARGS are as for `message', including a format-string."
-  (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args)))
-        (alert-message-preformatted t))
-    (alert-message-logonly msg)
+  (let ((msg (if (and (boundp 'express-message-preformatted) express-message-preformatted) (car args) (apply 'format args)))
+        (express-message-preformatted t))
+    (express-message-logonly msg)
     (condition-case nil
         (progn
           (popup-volatile msg)
@@ -429,10 +429,10 @@ ARGS are as for `message', including a format-string."
                (popup-tip msg)
                msg)
            (error nil
-                (alert-message-nolog msg)))))))
+                (express-message-nolog msg)))))))
 
 ;;;###autoload
-(defun alert-message-notify (&rest args)
+(defun express-message-notify (&rest args)
   "An flet'able replacement for `message' which uses notifications instead echo.
 
 The following functions are attempted in order call system
@@ -441,40 +441,40 @@ functions fail, the message content will appear in the echo
 area as usual.
 
 ARGS are as for `message', including a format-string."
-  (let ((msg (if (and (boundp 'alert-message-preformatted) alert-message-preformatted) (car args) (apply 'format args)))
-        (alert-message-preformatted t))
-    (alert-message-logonly msg)
+  (let ((msg (if (and (boundp 'express-message-preformatted) express-message-preformatted) (car args) (apply 'format args)))
+        (express-message-preformatted t))
+    (express-message-logonly msg)
     (condition-case nil
         (progn
-          (notify alert-message-notify-title msg)
+          (notify express-message-notify-title msg)
           msg)
       (error nil
          (condition-case nil
              (progn
-               (todochiku-message alert-message-notify-title msg "")
+               (todochiku-message express-message-notify-title msg "")
                msg)
            (error nil
-                (alert-message-nolog msg)))))))
+                (express-message-nolog msg)))))))
 
 ;;;###autoload
-(defun alert-message-highlight (&rest args)
+(defun express-message-highlight (&rest args)
   "An flet'able replacement for `message' which echos highlighted text.
 
 Text without added properties is logged to the messages buffer as
 usual.
 
 ARGS are as for `message', including a format-string."
-  (let ((retval (apply 'alert-message-logonly args)))
+  (let ((retval (apply 'express-message-logonly args)))
     (when (stringp (car args))
       (callf concat (car args) (propertize " " 'display '(space :align-to right-margin)))
       (callf string-utils-propertize-fillin (car args) 'face (append (face-attr-construct 'default)
-                                                                     (face-attr-construct alert-face))))
+                                                                     (face-attr-construct express-face))))
     (let ((message-log-max nil))
-      (apply 'alert-message-maybe-formatted args))
+      (apply 'express-message-maybe-formatted args))
     retval))
 
 ;;;###autoload
-(defun alert (content &optional quiet seconds nocolor log notify popup)
+(defun express (content &optional quiet seconds nocolor log notify popup)
   "Transiently and noticeably display CONTENT in the echo area.
 
 CONTENT should be a pre-`format'ted if it is a string.
@@ -485,12 +485,12 @@ Optional QUIET suppresses the bell, which is on by default.
 
 Optional SECONDS determines the number of seconds CONTENT will be
 displayed before reverting to the previous content of the echo
-area.  Default is `alert-message-seconds'.  If SECONDS is 0, or
+area.  Default is `express-message-seconds'.  If SECONDS is 0, or
 non-numeric, the message is not timed out, and remains visible
 until the next write to the echo area.
 
 Optional NOCOLOR suppresses coloring the message with face held
-in the variable `alert-face'.
+in the variable `express-face'.
 
 Optional LOG enables logging of CONTENT for any non-nil value.
 If LOG is 'log-only, then CONTENT goes only to the *Messages*
@@ -508,7 +508,7 @@ the popup will be used instead of the echo area.  For any other
 non-nil value, the popup will be used in addition to the echo
 area.
 
-The behavior of `alert' is very different from `message':
+The behavior of `express' is very different from `message':
 
   - CONTENT must already be formatted.
 
@@ -523,36 +523,36 @@ The behavior of `alert' is very different from `message':
   - After display, the previous contents of the echo area are
     restored.
 
-The following forms using `message` and `alert` are equivalent:
+The following forms using `message` and `express` are equivalent:
 
    (message \"hello, %s\" name)
-   (alert (format \"hello, %s\" name) 'quiet 0 'nocolor 'log)"
+   (express (format \"hello, %s\" name) 'quiet 0 'nocolor 'log)"
   (unless (stringp content)
     (if (fboundp 'string-utils-stringify-anything)
         (callf string-utils-stringify-anything content)
       ;; else
       (callf2 format "%s" content)))
-  (let ((alert-message-seconds alert-message-seconds)
+  (let ((express-message-seconds express-message-seconds)
         (message-log-max message-log-max)
         (colored-content content)
-        (alert-message-preformatted t))
+        (express-message-preformatted t))
     (unless (or quiet
                 (eq log 'log-only)
                 (eq notify 'replace-echo)
                 (eq popup 'replace-echo))
       (ding t))
     (when log
-      (alert-message-logonly content))
+      (express-message-logonly content))
     (when notify
-      (alert-message-notify content))
+      (express-message-notify content))
     (when popup
-      (alert-message-popup content))
+      (express-message-popup content))
     (setq message-log-max nil)
     (cond
       ((numberp seconds)
-       (setq alert-message-seconds seconds))
+       (setq express-message-seconds seconds))
       ((not (null seconds))
-       (setq alert-message-seconds 0)))
+       (setq express-message-seconds 0)))
     (unless (or (eq log 'log-only)
                 (eq notify 'replace-echo)
                 (eq popup 'replace-echo))
@@ -561,56 +561,56 @@ The following forms using `message` and `alert` are equivalent:
       (unless nocolor
         (callf concat colored-content (propertize " " 'display '(space :align-to right-margin)))
         (callf string-utils-propertize-fillin colored-content 'face (append (face-attr-construct 'default)
-                                                                            (face-attr-construct alert-face))))
-      (if (and (numberp alert-message-seconds)
-               (> alert-message-seconds 0))
-          (alert-message-temp colored-content)
-        (alert-message-noformat colored-content))))
+                                                                            (face-attr-construct express-face))))
+      (if (and (numberp express-message-seconds)
+               (> express-message-seconds 0))
+          (express-message-temp colored-content)
+        (express-message-noformat colored-content))))
   content)
 
 ;;;###autoload
-(defun* alert* (content &key quiet seconds nocolor log notify popup)
-  "An alternate version of `alert' which uses Common Lisp semantics.
+(defun* express* (content &key quiet seconds nocolor log notify popup)
+  "An alternate version of `express' which uses Common Lisp semantics.
 
 CONTENT, QUIET, SECONDS, NOCOLOR, LOG, NOTIFY, and POPUP are as
-documented for `alert'."
-  (alert content quiet seconds nocolor log notify popup))
+documented for `express'."
+  (express content quiet seconds nocolor log notify popup))
 
 ;;;###autoload
-(defmacro alert-with-message-logonly (&rest body)
+(defmacro express-with-message-logonly (&rest body)
   "Execute BODY, redirecting the output of `message' to the log only.
 
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(cl-flet* ((message (&rest args)
-                       (apply 'alert-message-logonly args)))
+                       (apply 'express-message-logonly args)))
      ,@body))
 
 ;;;###autoload
-(defmacro alert-with-message-nolog (&rest body)
+(defmacro express-with-message-nolog (&rest body)
   "Execute BODY, keeping the output of `message' from being added to the log.
 
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(cl-flet* ((message (&rest args)
-                       (apply 'alert-message-nolog args)))
+                       (apply 'express-message-nolog args)))
      ,@body))
 
 ;;;###autoload
-(defmacro alert-with-message-highlight (&rest body)
+(defmacro express-with-message-highlight (&rest body)
   "Execute BODY, highlighting the output of `message'.
 
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(cl-flet* ((message (&rest args)
-                       (apply 'alert-message-highlight args)))
+                       (apply 'express-message-highlight args)))
      ,@body))
 
 ;;;###autoload
-(defmacro alert-with-message-notify (&rest body)
+(defmacro express-with-message-notify (&rest body)
   "Execute BODY, redirecting the output of `message' to system notifications.
 
 notify.el or todochiku.el may be used to provide the interface to
@@ -620,11 +620,11 @@ Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(cl-flet* ((message (&rest args)
-                       (apply 'alert-message-notify args)))
+                       (apply 'express-message-notify args)))
      ,@body))
 
 ;;;###autoload
-(defmacro alert-with-message-popup (&rest body)
+(defmacro express-with-message-popup (&rest body)
   "Execute BODY, redirecting the output of `message' to popups.
 
 popup.el is required.
@@ -633,22 +633,22 @@ Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(cl-flet* ((message (&rest args)
-                       (apply 'alert-message-popup args)))
+                       (apply 'express-message-popup args)))
      ,@body))
 
 ;;;###autoload
-(defmacro alert-with-message-insert (&rest body)
+(defmacro express-with-message-insert (&rest body)
   "Execute BODY, redirecting the output of `message' to `insert'.
 
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(cl-flet* ((message (&rest args)
-                       (apply 'alert-message-insert args)))
+                       (apply 'express-message-insert args)))
      ,@body))
 
 ;;;###autoload
-(defmacro alert-with-message-string (&rest body)
+(defmacro express-with-message-string (&rest body)
   "Execute BODY, capturing the output of `message' to a string.
 
 Accumulated message output is returned.
@@ -659,23 +659,23 @@ Lisp will be affected."
   (let ((output (gensym "--with-message-string--")))
     `(let ((,output ""))
        (cl-flet* ((message (&rest args)
-                           (callf concat ,output (apply 'alert-message-string args))))
+                           (callf concat ,output (apply 'express-message-string args))))
          ,@body)
        ,output)))
 
 ;;;###autoload
-(defmacro alert-with-message-temp (&rest body)
+(defmacro express-with-message-temp (&rest body)
   "Execute BODY, making all `message' output temporary.
 
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(cl-flet* ((message (&rest args)
-                       (apply 'alert-message-temp args)))
+                       (apply 'express-message-temp args)))
      ,@body))
 
 ;;;###autoload
-(defmacro alert-with-message-noformat (&rest body)
+(defmacro express-with-message-noformat (&rest body)
   "Execute BODY, keeping `message' from formatting its arguments.
 
 All arguments to `message' after the first one will be dropped.
@@ -684,10 +684,10 @@ Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(cl-flet* ((message (&rest args)
-                       (apply 'alert-message-noformat args)))
+                       (apply 'express-message-noformat args)))
      ,@body))
 
-(provide 'alert)
+(provide 'express)
 
 ;;
 ;; Emacs
@@ -704,4 +704,4 @@ Lisp will be affected."
 ;; LocalWords: flet todochiku ARGS args callf
 ;;
 
-;;; alert.el ends here
+;;; express.el ends here

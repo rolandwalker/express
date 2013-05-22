@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/rolandwalker/alert.png?branch=master)](http://travis-ci.org/rolandwalker/alert)
+[![Build Status](https://secure.travis-ci.org/rolandwalker/express.png?branch=master)](http://travis-ci.org/rolandwalker/express)
 
 Overview
 ========
@@ -9,10 +9,10 @@ Quickstart
 ----------
 
 ```lisp
-(require 'alert)
-(alert-install-aliases)
+(require 'express)
+(express-install-aliases)
  
-(alert "important message")
+(express "important message")
  
 (with-message-logonly
   (do-something-noisy))
@@ -21,14 +21,14 @@ Quickstart
 Explanation
 -----------
 
-Alert.el provides alternatives to Emacs' built-in `message` function.
+Express.el provides alternatives to Emacs' built-in `message` function.
 
 This library is generally only useful when programming in Emacs Lisp.
 However, some end-users may find it useful to control messaging,
 especially for the case of quietening chatty libraries in their
 ~/.emacs files (see "message alternatives" section below).
 
-The principal `alert` function by default works differently from
+The principal `express` function by default works differently from
 `message` in almost every respect.
 
 The arguments to the familiar `message` function are a format string
@@ -36,13 +36,13 @@ followed by any number of arguments which may be substituted into the
 format string.  This flexible syntax obviates any arguments to control
 the *behavior* of `message`.
 
-`Alert`, by contrast, takes as its first argument a preformatted
+`Express`, by contrast, takes as its first argument a preformatted
 value to display.  Subsequent arguments control its behavior.
 
-function `alert`
-----------------
+function `express`
+------------------
 
-The full argument spec for the `alert` function is:
+The full argument spec for the `express` function is:
 
 	CONTENT &optional QUIET SECONDS NOCOLOR LOG NOTIFY POPUP
 
@@ -58,12 +58,12 @@ Optional QUIET suppresses the bell, which is on by default.
 
 Optional SECONDS determines the number of seconds CONTENT will be
 displayed before reverting to the previous content of the echo
-area.  Default is `alert-message-seconds`.  If SECONDS is 0, or
+area.  Default is `express-message-seconds`.  If SECONDS is 0, or
 non-numeric, the message is not timed out, and remains visible
 until the next write to the echo area.
 
 Optional NOCOLOR suppresses coloring the message with face held
-in the variable `alert-face`.
+in the variable `express-face`.
 
 Optional LOG enables logging of CONTENT for any non-nil value.
 If LOG is `'log-only`, then CONTENT goes only to the \*Messages\*
@@ -80,7 +80,7 @@ popup.el.  The default is nil.  If POPUP is `'replace-echo`, then
 the popup will be used instead of the echo area.  For any other
 non-nil value, the popup will be used in addition to the echo area.
 
-The behavior of `alert` is very different from `message`:
+The behavior of `express` is very different from `message`:
 
 * String CONTENT must already be passed through `format`.
 
@@ -94,22 +94,22 @@ The behavior of `alert` is very different from `message`:
 
 * After display, the previous contents of the echo area are restored.
 
-The following forms using `message` and `alert` are equivalent:
+The following forms using `message` and `express` are equivalent:
 
 ```lisp
 (message "hello, %s" name)
  
-(alert (format "hello, %s" name) 'quiet 0 'nocolor 'log)
+(express (format "hello, %s" name) 'quiet 0 'nocolor 'log)
 ```
 
-function `alert*`
------------------
+function `express*`
+-------------------
 
-The variant function `alert*` has identical functionality to `alert`
+The variant function `express*` has identical functionality to `express`
 but takes CL-style arguments:
 
 ```lisp
-(alert* "hello" :quiet 0)
+(express* "hello" :quiet 0)
 ```
 
 `message` alternatives
@@ -119,14 +119,14 @@ The following functions provided by this library are drop-in
 alternatives to `message` which may be useful in an `flet`
 construct:
 
-	alert-message-nolog
-	alert-message-logonly
-	alert-message-highlight
-	alert-message-insert
-	alert-message-notify
-	alert-message-popup
-	alert-message-temp
-	alert-message-string
+	express-message-nolog
+	express-message-logonly
+	express-message-highlight
+	express-message-insert
+	express-message-notify
+	express-message-popup
+	express-message-temp
+	express-message-string
 
 macros
 ------
@@ -134,20 +134,20 @@ macros
 The following macros modify the behavior of `message` within
 the enclosing expression:
 
-	alert-with-message-nolog
-	alert-with-message-logonly
-	alert-with-message-highlight
-	alert-with-message-insert
-	alert-with-message-notify
-	alert-with-message-popup
-	alert-with-message-temp
-	alert-with-message-string
+	express-with-message-nolog
+	express-with-message-logonly
+	express-with-message-highlight
+	express-with-message-insert
+	express-with-message-notify
+	express-with-message-popup
+	express-with-message-temp
+	express-with-message-string
 
 For example, the following code would redirect messages from a very
 chatty library to the log:
 
 ```lisp
-(alert-with-message-nolog
+(express-with-message-nolog
   (require 'very-chatty-library))
 ```
 
@@ -155,7 +155,7 @@ The same method may also be handy with `defadvice`:
 
 ```lisp
 (defadvice very-chatty-function (around very-chatty-redirect activate)
-  (alert-with-message-nolog
+  (express-with-message-nolog
     ad-do-it))
 ```
 
@@ -164,18 +164,18 @@ form:
 
 ```lisp
 (defadvice an-important-function (around an-important-function activate)
-  (alert-with-message-notify
+  (express-with-message-notify
     ad-do-it))
 ```
 
 Notes
 -----
 
-Running `alert-install-aliases` or setting the corresponding
+Running `express-install-aliases` or setting the corresponding
 variable in customize will install convenience aliases outside
-the `alert-` namespace.  This is disabled by default.
+the `express-` namespace.  This is disabled by default.
 
-The function `alert-message-noformat` is also available, but it
+The function `express-message-noformat` is also available, but it
 is not quite a drop-in replacement for `message`.
 
 Some of the functions require the availability of [notify.el](http://emacswiki.org/emacs/notify.el), [todochiku.el](http://www.emacswiki.org/emacs/ToDoChiKu),
@@ -186,7 +186,7 @@ present.
 Bugs
 ----
 
-`message` is a subr.  Macros such as `alert-with-message-logonly`
+`message` is a subr.  Macros such as `express-with-message-logonly`
 will only affect calls to `message` from Lisp.
 
 Compatibility and Requirements
