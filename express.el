@@ -313,7 +313,7 @@ call `message' directly."
       (express-message content)
     ;; else
     (assert (stringp content) nil "CONTENT must be a string")
-    (express-message (replace-regexp-in-string "%" "%%" content))))
+    (express-message (replace-regexp-in-string "\\(%\\)" "%\\1" content))))
 
 (defun express-message-maybe-formatted (&rest args)
   "Dispatch `message' according to the variable `express-message-preformatted'.
