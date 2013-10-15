@@ -205,7 +205,7 @@
   "Alternatives to `message'."
   :version "0.5.12"
   :link '(emacs-commentary-link :tag "Commentary" "express")
-  :link '(url-link :tag "Github" "http://github.com/rolandwalker/express")
+  :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/express")
   :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/Express")
   :prefix "express-"
   :group 'extensions)
