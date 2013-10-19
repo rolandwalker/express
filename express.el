@@ -113,7 +113,7 @@
 ;;
 ;; Compatibility and Requirements
 ;;
-;;     GNU Emacs version 24.4-devel     : no, at the time of writing
+;;     GNU Emacs version 24.4-devel     : yes, at the time of writing
 ;;     GNU Emacs version 24.3           : yes
 ;;     GNU Emacs version 23.3           : yes
 ;;     GNU Emacs version 22.3 and lower : no
@@ -355,7 +355,8 @@ ARGS are as for `message', including a format-string."
             (let ((msg (if (and (boundp 'express-message-preformatted)
                                 express-message-preformatted)
                            (car args)
-                         (apply 'format args))))
+                         (apply 'format args)))
+                  (inhibit-read-only t))
               (express--message-insert-1 msg)
               msg)))
       ;; else
