@@ -180,12 +180,8 @@
 ;;; requirements
 
 (eval-and-compile
-  ;; for callf, callf2, assert, flet/cl-flet*
-  (require 'cl)
-  (unless (fboundp 'cl-flet*)
-    (defalias 'cl-flet* 'flet)
-    (put 'cl-flet* 'lisp-indent-function 1)
-    (put 'cl-flet* 'edebug-form-spec '((&rest (defun*)) cl-declarations body))))
+  ;; for callf, callf2, assert, gensym
+  (require 'cl))
 
 (autoload 'notify            "notify"         "Notify TITLE, BODY via `notify-method'.")
 (autoload 'todochiku-message "todochiku"      "Send a message via growl, snarl, etc.")
@@ -666,10 +662,12 @@ Accumulated message output is returned.
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  (let ((output (gensym "--with-message-string--")))
+  (let ((output (gensym "--with-message-string--"))
+        (capfun (gensym "--with-message-func--")))
     `(let ((,output ""))
-       (cl-flet* ((message (&rest args)
-                           (callf concat ,output (apply 'express-message-string args))))
+       (defun ,capfun (&rest args)
+         (callf concat ,output (apply 'express-message-string args)))
+       (express--with-dynamic-fset 'message (function ,capfun)
          ,@body)
        ,output)))
 
