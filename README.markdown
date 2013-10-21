@@ -195,7 +195,8 @@ Compatibility and Requirements
 	GNU Emacs version 24.4           : yes, at the time of writing
 	GNU Emacs version 24.3           : yes
 	GNU Emacs version 23.3           : yes
-	GNU Emacs version 22.3 and lower : no
+	GNU Emacs version 22.2           : yes, with some limitations
+	GNU Emacs version 21.x and lower : unknown
 
 Uses if present: [string-utils.el](http://github.com/rolandwalker/string-utils), [notify.el](http://emacswiki.org/emacs/notify.el), [todochiku.el](http://www.emacswiki.org/emacs/ToDoChiKu),
 [popup.el](http://github.com/auto-complete/popup-el)
