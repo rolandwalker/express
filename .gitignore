@@ -1,1 +1,5 @@
 /ert-tests/ert.el
+/ert-tests/list-utils.el
+/ert-tests/notify.el
+/ert-tests/popup.el
+/ert-tests/string-utils.el
