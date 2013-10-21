@@ -300,6 +300,20 @@ already existing properties are respected."
         (font-lock-fillin-text-property 0 (length str-val) prop val str-val)))
     str-val))
 
+;;; utility macros
+
+(defmacro express--with-dynamic-fset (func1 func2 &rest body)
+  "Execute BODY, within which FUNC1 (a symbol) is dynamically `fset' to FUNC2.
+
+This is portable to versions of Emacs without dynamic `flet`."
+  (declare (debug t) (indent 2))
+  (let ((o (gensym "--function--")))
+    `(let ((,o (symbol-function ,func1)))
+       (fset ,func1 ,func2)
+       (unwind-protect
+           (progn ,@body)
+         (fset ,func1 ,o)))))
+
 ;;; utility functions
 
 ;;;###autoload
@@ -585,8 +599,7 @@ documented for `express'."
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet* ((message (&rest args)
-                       (apply 'express-message-logonly args)))
+  `(express--with-dynamic-fset 'message 'express-message-logonly
      ,@body))
 
 ;;;###autoload
@@ -596,8 +609,7 @@ Lisp will be affected."
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet* ((message (&rest args)
-                       (apply 'express-message-nolog args)))
+  `(express--with-dynamic-fset 'message 'express-message-nolog
      ,@body))
 
 ;;;###autoload
@@ -607,8 +619,7 @@ Lisp will be affected."
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet* ((message (&rest args)
-                       (apply 'express-message-highlight args)))
+  `(express--with-dynamic-fset 'message 'express-message-highlight
      ,@body))
 
 ;;;###autoload
@@ -621,8 +632,7 @@ system notifications.
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet* ((message (&rest args)
-                       (apply 'express-message-notify args)))
+  `(express--with-dynamic-fset 'message 'express-message-notify
      ,@body))
 
 ;;;###autoload
@@ -634,8 +644,7 @@ popup.el is required.
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet* ((message (&rest args)
-                       (apply 'express-message-popup args)))
+  `(express--with-dynamic-fset 'message 'express-message-popup
      ,@body))
 
 ;;;###autoload
@@ -645,8 +654,7 @@ Lisp will be affected."
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet* ((message (&rest args)
-                       (apply 'express-message-insert args)))
+  `(express--with-dynamic-fset 'message 'express-message-insert
      ,@body))
 
 ;;;###autoload
@@ -672,8 +680,7 @@ Lisp will be affected."
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet* ((message (&rest args)
-                       (apply 'express-message-temp args)))
+  `(express--with-dynamic-fset 'message 'express-message-temp
      ,@body))
 
 ;;;###autoload
@@ -685,8 +692,7 @@ All arguments to `message' after the first one will be dropped.
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  `(cl-flet* ((message (&rest args)
-                       (apply 'express-message-noformat args)))
+  `(express--with-dynamic-fset 'message 'express-message-noformat
      ,@body))
 
 (provide 'express)
