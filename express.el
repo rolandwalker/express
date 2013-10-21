@@ -9,7 +9,7 @@
 ;; Last-Updated: 22 May 2013
 ;; EmacsWiki: Express
 ;; Keywords: extensions, message, interface
-;; Package-Requires: ((string-utils "0.0.2"))
+;; Package-Requires: ((string-utils "0.3.0"))
 ;;
 ;; Simplified BSD License
 ;;
