@@ -4,3 +4,4 @@
 /ert-tests/popup.el
 /ert-tests/string-utils.el
 *-autoloads.el
+*.elc
