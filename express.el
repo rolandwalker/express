@@ -298,8 +298,10 @@ already existing properties are respected."
 
 ;;; utility macros
 
-  "Execute BODY, within which FUNC1 (a symbol) is dynamically `fset' to FUNC2.
 (defmacro express--with-fset (func1 func2 &rest body)
+  "Execute BODY, within which FUNC1 (a symbol) is `fset' to FUNC2.
+
+This has dynamic (not lexical) effect.  FUNC2 may be a lambda.
 
 This is portable to versions of Emacs without dynamic `flet`."
   (declare (debug t) (indent 2))
