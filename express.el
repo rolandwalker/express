@@ -5,8 +5,8 @@
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/express
 ;; URL: http://raw.github.com/rolandwalker/express/master/express.el
-;; Version: 0.5.12
-;; Last-Updated: 22 May 2013
+;; Version: 0.6.0
+;; Last-Updated: 23 Oct 2013
 ;; EmacsWiki: Express
 ;; Keywords: extensions, message, interface
 ;; Package-Requires: ((string-utils "0.3.2"))
@@ -200,7 +200,7 @@
 ;;;###autoload
 (defgroup express nil
   "Alternatives to `message'."
-  :version "0.5.12"
+  :version "0.6.0"
   :link '(emacs-commentary-link :tag "Commentary" "express")
   :link '(url-link :tag "GitHub" "http://github.com/rolandwalker/express")
   :link '(url-link :tag "EmacsWiki" "http://emacswiki.org/emacs/Express")
