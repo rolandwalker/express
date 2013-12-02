@@ -306,11 +306,12 @@ This has dynamic (not lexical) effect.  FUNC2 may be a lambda.
 This is portable to versions of Emacs without dynamic `flet`."
   (declare (debug t) (indent 2))
   (let ((o (gensym "--function--")))
-    `(let ((,o (symbol-function ,func1)))
+    `(let ((,o (ignore-errors (symbol-function ,func1))))
        (fset ,func1 ,func2)
        (unwind-protect
            (progn ,@body)
-         (fset ,func1 ,o)))))
+         (when ,o
+           (fset ,func1 ,o))))))
 
 ;;; utility functions
 
