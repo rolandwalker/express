@@ -4,7 +4,7 @@
 ;;
 ;; Author: Roland Walker <walker@pobox.com>
 ;; Homepage: http://github.com/rolandwalker/express
-;; URL: http://raw.github.com/rolandwalker/express/master/express.el
+;; URL: http://raw.githubusercontent.com/rolandwalker/express/master/express.el
 ;; Version: 0.6.0
 ;; Last-Updated: 23 Oct 2013
 ;; EmacsWiki: Express
