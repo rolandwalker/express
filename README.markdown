@@ -1,12 +1,10 @@
 [![Build Status](https://secure.travis-ci.org/rolandwalker/express.png?branch=master)](http://travis-ci.org/rolandwalker/express)
 
-Overview
-========
+# Overview
 
 Alternatives to Emacs `message`.
 
-Quickstart
-----------
+## Quickstart
 
 ```elisp
 (require 'express)
@@ -18,8 +16,7 @@ Quickstart
   (do-something-noisy))
 ```
 
-Explanation
------------
+## Explanation
 
 Express.el provides alternatives to Emacs' built-in `message` function.
 
@@ -39,8 +36,7 @@ the *behavior* of `message`.
 `Express`, by contrast, takes as its first argument a preformatted
 value to display.  Subsequent arguments control its behavior.
 
-function `express`
-------------------
+## function `express`
 
 The full argument spec for the `express` function is:
 
@@ -102,8 +98,7 @@ The following forms using `message` and `express` are equivalent:
 (express (format "hello, %s" name) 'quiet 0 'nocolor 'log)
 ```
 
-function `express*`
--------------------
+## function `express*`
 
 The variant function `express*` has identical functionality to `express`
 but takes CL-style arguments:
@@ -112,8 +107,7 @@ but takes CL-style arguments:
 (express* "hello" :quiet 0)
 ```
 
-`message` alternatives
-----------------------
+## `message` alternatives
 
 The following functions provided by this library are drop-in
 alternatives to `message` which may be useful in an `flet`
@@ -128,8 +122,7 @@ construct:
 	express-message-temp
 	express-message-string
 
-macros
-------
+## macros
 
 The following macros modify the behavior of `message` within
 the enclosing expression:
@@ -168,8 +161,7 @@ form:
     ad-do-it))
 ```
 
-Notes
------
+## Notes
 
 Running `express-install-aliases` or setting the corresponding
 variable in customize will install convenience aliases outside
@@ -183,14 +175,12 @@ or [popup.el](http://github.com/auto-complete/popup-el).  In all cases, the func
 degrade to an ordinary message if the external library is not
 present.
 
-Bugs
-----
+## Bugs
 
 `message` is a subr.  Macros such as `express-with-message-logonly`
 will only affect calls to `message` from Lisp.
 
-Compatibility and Requirements
-------------------------------
+## Compatibility and Requirements
 
 	GNU Emacs version 24.4           : yes, at the time of writing
 	GNU Emacs version 24.3           : yes
