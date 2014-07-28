@@ -8,7 +8,7 @@ Alternatives to Emacs `message`.
 Quickstart
 ----------
 
-```lisp
+```elisp
 (require 'express)
 (express-install-aliases)
  
@@ -96,7 +96,7 @@ The behavior of `express` is very different from `message`:
 
 The following forms using `message` and `express` are equivalent:
 
-```lisp
+```elisp
 (message "hello, %s" name)
  
 (express (format "hello, %s" name) 'quiet 0 'nocolor 'log)
@@ -108,7 +108,7 @@ function `express*`
 The variant function `express*` has identical functionality to `express`
 but takes CL-style arguments:
 
-```lisp
+```elisp
 (express* "hello" :quiet 0)
 ```
 
@@ -146,14 +146,14 @@ the enclosing expression:
 For example, the following code would redirect messages from a very
 chatty library to the log:
 
-```lisp
+```elisp
 (express-with-message-nolog
   (require 'very-chatty-library))
 ```
 
 The same method may also be handy with `defadvice`:
 
-```lisp
+```elisp
 (defadvice very-chatty-function (around very-chatty-redirect activate)
   (express-with-message-nolog
     ad-do-it))
@@ -162,7 +162,7 @@ The same method may also be handy with `defadvice`:
 Similarly, important messages may be redirected to a more visible
 form:
 
-```lisp
+```elisp
 (defadvice an-important-function (around an-important-function activate)
   (express-with-message-notify
     ad-do-it))
