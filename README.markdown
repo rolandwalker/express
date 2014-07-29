@@ -18,7 +18,7 @@ Alternatives to Emacs `message`.
 
 ## Explanation
 
-Express.el provides alternatives to Emacs' built-in `message` function.
+`express.el` provides alternatives to Emacs' built-in `message` function.
 
 This library is generally only useful when programming in Emacs Lisp.
 However, some end-users may find it useful to control messaging,
@@ -33,7 +33,7 @@ followed by any number of arguments which may be substituted into the
 format string.  This flexible syntax obviates any arguments to control
 the *behavior* of `message`.
 
-`Express`, by contrast, takes as its first argument a preformatted
+`express`, by contrast, takes as its first argument a preformatted
 value to display.  Subsequent arguments control its behavior.
 
 ## function `express`
@@ -72,7 +72,7 @@ echo area.  For any other non-nil value, the notification will be
 used in addition to the echo area.
 
 Optional POPUP enables sending the message via `popup-tip` from
-popup.el.  The default is nil.  If POPUP is `'replace-echo`, then
+`popup.el`.  The default is nil.  If POPUP is `'replace-echo`, then
 the popup will be used instead of the echo area.  For any other
 non-nil value, the popup will be used in addition to the echo area.
 
