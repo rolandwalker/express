@@ -23,7 +23,7 @@ Express.el provides alternatives to Emacs' built-in `message` function.
 This library is generally only useful when programming in Emacs Lisp.
 However, some end-users may find it useful to control messaging,
 especially for the case of quietening chatty libraries in their
-~/.emacs files (see [`message` alternatives](#message-alternatives) below).
+`~/.emacs` files (see [`message` alternatives](#message-alternatives) below).
 
 The principal `express` function by default works differently from
 `message` in almost every respect.
