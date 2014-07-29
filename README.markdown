@@ -164,7 +164,7 @@ form:
 ## Notes
 
 Running `express-install-aliases` or setting the corresponding
-variable in customize will install convenience aliases outside
+variable in `customize` will install convenience aliases outside
 the `express-` namespace.  This is disabled by default.
 
 The function `express-message-noformat` is also available, but it
