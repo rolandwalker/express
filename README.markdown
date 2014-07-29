@@ -188,5 +188,4 @@ will only affect calls to `message` from Lisp.
 	GNU Emacs version 22.2           : yes, with some limitations
 	GNU Emacs version 21.x and lower : unknown
 
-Uses if present: [string-utils.el](http://github.com/rolandwalker/string-utils), [notify.el](http://emacswiki.org/emacs/notify.el), [todochiku.el](http://www.emacswiki.org/emacs/ToDoChiKu),
-[popup.el](http://github.com/auto-complete/popup-el)
+Uses if present: [notify.el](http://emacswiki.org/emacs/notify.el), [popup.el](http://github.com/auto-complete/popup-el), [string-utils.el](http://github.com/rolandwalker/string-utils), [todochiku.el](http://www.emacswiki.org/emacs/ToDoChiKu)
