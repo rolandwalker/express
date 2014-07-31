@@ -4,6 +4,16 @@
 
 Alternatives to Emacs `message`.
 
+ * [Quickstart](#quickstart)
+ * [Explanation](#explanation)
+ * [function `express`](#function-express)
+ * [function `express*`](#function-express)
+ * [`message` alternatives](#message-alternatives)
+ * [macros](#macros)
+ * [Notes](#notes)
+ * [Bugs](#bugs)
+ * [Compatibility and Requirements](#compatibility-and-requirements)
+
 ## Quickstart
 
 ```elisp
@@ -78,17 +88,17 @@ non-nil value, the popup will be used in addition to the echo area.
 
 The behavior of `express` is very different from `message`:
 
-* String CONTENT must already be passed through `format`.
+ * String CONTENT must already be passed through `format`.
 
-* Non-strings are accepted for CONTENT.
+ * Non-strings are accepted for CONTENT.
 
-* The content is displayed with added color.
+ * The content is displayed with added color.
 
-* The bell is rung.
+ * The bell is rung.
 
-* CONTENT is not written to the messages buffer (log).
+ * CONTENT is not written to the messages buffer (log).
 
-* After display, the previous contents of the echo area are restored.
+ * After display, the previous contents of the echo area are restored.
 
 The following forms using `message` and `express` are equivalent:
 
