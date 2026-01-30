@@ -1,3 +1,4 @@
+;;; express-test.el --- Tests for express -*- lexical-binding: t; -*-
 
 ;;; requires and setup
 
@@ -70,7 +71,7 @@
      (read-char "Press a key to generate an unformatted message, which should be \"hello 2 %s\", including a literal percent sign.")
      (setq cursor-in-echo-area nil)
      (express-with-message-noformat
-       (message "hello 2 %s" 'other 'args 'ignored))
+      (message "hello 2 %s" 'other 'args 'ignored))
      (should (equal "hello 2 %s" (current-message)))
      (sleep-for 1)
      (y-or-n-p "Did that work as expected?"))))
@@ -130,7 +131,7 @@
 (ert-deftest express-message-logonly-04 nil
   (let ((msg "message-logonly-98765"))
     (express-with-message-logonly
-      (message msg))
+     (message msg))
     (should-not (equal msg (current-message)))
     (should (equal msg
                    (with-current-buffer "*Messages*"
@@ -169,7 +170,7 @@
   (let ((msg "message-insert-314159"))
     (with-temp-buffer
       (express-with-message-insert
-        (message "message-insert-314159"))
+       (message "message-insert-314159"))
       (should-not (equal msg (current-message)))
       (should (equal msg
                      (progn
@@ -200,8 +201,8 @@
         (str-val nil))
     (setq str-val
           (express-with-message-string
-            (message msg)
-            (message msg)))
+           (message msg)
+           (message msg)))
     (should (equal (concat msg "\n" msg "\n") str-val))))
 
 
@@ -254,7 +255,7 @@
      (read-char "Press a key to generate an unlogged message")
      (setq cursor-in-echo-area nil)
      (express-with-message-nolog
-       (message msg))
+      (message msg))
      (should (equal msg (current-message)))
      (should-not (equal msg
                         (with-current-buffer "*Messages*"
@@ -288,7 +289,7 @@
      (setq cursor-in-echo-area nil)
      (message "permanent message 2")
      (express-with-message-temp
-       (message "disappearing message 2"))
+      (message "disappearing message 2"))
      (sleep-for 2)
      (y-or-n-p "Did that work as expected?"))))
 
@@ -343,7 +344,7 @@
      (read-char "Press a key to generate a notification message")
      (setq cursor-in-echo-area nil)
      (express-with-message-notify
-       (message "notification message 1"))
+      (message "notification message 1"))
      (sleep-for 1)
      (y-or-n-p "Did that work as expected?"))))
 
@@ -373,7 +374,7 @@
      (read-char "Press a key to generate a highlighted message")
      (setq cursor-in-echo-area nil)
      (express-with-message-highlight
-       (message "highlighted message 2"))
+      (message "highlighted message 2"))
      (sleep-for 1)
      (with-current-buffer "*Messages*"
        (goto-char (point-max))
