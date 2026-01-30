@@ -9,7 +9,7 @@
 ;; Last-Updated: 23 Oct 2013
 ;; EmacsWiki: Express
 ;; Keywords: extensions, message, interface
-;; Package-Requires: ((string-utils "0.3.2"))
+;; Package-Requires: ((emacs "24.3") (string-utils "0.3.2"))
 ;;
 ;; Simplified BSD License
 ;;
@@ -180,8 +180,8 @@
 ;;; requirements
 
 (eval-and-compile
-  ;; for callf, callf2, assert, gensym
-  (require 'cl))
+  ;; for cl-callf, cl-callf2, cl-assert, cl-gensym
+  (require 'cl-lib))
 
 (autoload 'notify            "notify"         "Notify TITLE, BODY via `notify-method'.")
 (autoload 'todochiku-message "todochiku"      "Send a message via growl, snarl, etc.")
@@ -260,21 +260,21 @@ The following aliases will be installed:
                   string
                   )))
       (cond
-        ((and (numberp arg)
-              (< arg 0))
-         (dolist (sym syms)
-           (when (ignore-errors
-                   (eq (symbol-function (intern-soft (format "message-%s" sym)))
-                                        (intern-soft (format "express-message-%s" sym))))
-             (fmakunbound (intern (format "message-%s" sym))))
-           (when (ignore-errors
-                   (eq (symbol-function (intern-soft (format "with-message-%s" sym)))
-                                        (intern-soft (format "express-with-message-%s" sym))))
-             (fmakunbound (intern (format "with-message-%s" sym))))))
-        (t
-         (dolist (sym syms)
-           (defalias (intern (format "message-%s" sym)) (intern (format "express-message-%s" sym)))
-           (defalias (intern (format "with-message-%s" sym)) (intern (format "express-with-message-%s" sym)))))))))
+       ((and (numberp arg)
+             (< arg 0))
+        (dolist (sym syms)
+          (when (ignore-errors
+                  (eq (symbol-function (intern-soft (format "message-%s" sym)))
+                      (intern-soft (format "express-message-%s" sym))))
+            (fmakunbound (intern (format "message-%s" sym))))
+          (when (ignore-errors
+                  (eq (symbol-function (intern-soft (format "with-message-%s" sym)))
+                      (intern-soft (format "express-with-message-%s" sym))))
+            (fmakunbound (intern (format "with-message-%s" sym))))))
+       (t
+        (dolist (sym syms)
+          (defalias (intern (format "message-%s" sym)) (intern (format "express-message-%s" sym)))
+          (defalias (intern (format "with-message-%s" sym)) (intern (format "express-with-message-%s" sym)))))))))
 
 ;;;###autoload
 (when express-install-short-aliases
@@ -305,7 +305,7 @@ This has dynamic (not lexical) effect.  FUNC2 may be a lambda.
 
 This is portable to versions of Emacs without dynamic `flet`."
   (declare (debug t) (indent 2))
-  (let ((o (gensym "--function--")))
+  (let ((o (cl-gensym "--function--")))
     `(let ((,o (ignore-errors (symbol-function ,func1))))
        (fset ,func1 ,func2)
        (unwind-protect
@@ -326,7 +326,7 @@ call `message' directly."
   (if (null content)
       (express-message content)
     ;; else
-    (assert (stringp content) nil "CONTENT must be a string")
+    (cl-assert (stringp content) nil "CONTENT must be a string")
     (express-message (replace-regexp-in-string "\\(%\\)" "%\\1" content))))
 
 (defun express-message-maybe-formatted (&rest args)
@@ -338,11 +338,11 @@ bound and non-nil.
 When formatting is performed, ARGS are treated as for `message', including
 a format-string.  When formatting is not performed, only the first element
 of ARGS is respected.  It should be a pre-formatted string."
-    (if (and (boundp 'express-message-preformatted)
-             express-message-preformatted)
-        (apply 'express-message-noformat args)
-      ;; else
-      (apply 'express-message args)))
+  (if (and (boundp 'express-message-preformatted)
+           express-message-preformatted)
+      (apply 'express-message-noformat args)
+    ;; else
+    (apply 'express-message args)))
 
 (defun express--message-insert-1 (msg)
   "Internal driver for `express-message-insert'.
@@ -439,12 +439,12 @@ ARGS are as for `message', including a format-string."
           (popup-volatile msg)
           msg)
       (error nil
-         (condition-case nil
-             (progn
-               (popup-tip msg)
-               msg)
-           (error nil
-                (express-message-nolog msg)))))))
+             (condition-case nil
+                 (progn
+                   (popup-tip msg)
+                   msg)
+               (error nil
+                      (express-message-nolog msg)))))))
 
 ;;;###autoload
 (defun express-message-notify (&rest args)
@@ -464,12 +464,12 @@ ARGS are as for `message', including a format-string."
           (notify express-message-notify-title msg)
           msg)
       (error nil
-         (condition-case nil
-             (progn
-               (todochiku-message express-message-notify-title msg "")
-               msg)
-           (error nil
-                (express-message-nolog msg)))))))
+             (condition-case nil
+                 (progn
+                   (todochiku-message express-message-notify-title msg "")
+                   msg)
+               (error nil
+                      (express-message-nolog msg)))))))
 
 ;;;###autoload
 (defun express-message-highlight (&rest args)
@@ -481,9 +481,9 @@ usual.
 ARGS are as for `message', including a format-string."
   (let ((retval (apply 'express-message-logonly args)))
     (when (stringp (car args))
-      (callf concat (car args) (propertize " " 'display '(space :align-to right-margin)))
-      (callf string-utils-propertize-fillin (car args) 'face (append (face-attr-construct 'default)
-                                                                     (face-attr-construct express-face))))
+      (cl-callf concat (car args) (propertize " " 'display '(space :align-to right-margin)))
+      (cl-callf string-utils-propertize-fillin (car args) 'face (append (face-attr-construct 'default)
+                                                                        (face-attr-construct express-face))))
     (let ((message-log-max nil))
       (apply 'express-message-maybe-formatted args))
     retval))
@@ -544,9 +544,9 @@ The following forms using `message` and `express` are equivalent:
    (express (format \"hello, %s\" name) 'quiet 0 'nocolor 'log)"
   (unless (stringp content)
     (if (fboundp 'string-utils-stringify-anything)
-        (callf string-utils-stringify-anything content)
+        (cl-callf string-utils-stringify-anything content)
       ;; else
-      (callf2 format "%s" content)))
+      (cl-callf2 format "%s" content)))
   (let ((express-message-seconds express-message-seconds)
         (message-log-max message-log-max)
         (colored-content content)
@@ -564,19 +564,19 @@ The following forms using `message` and `express` are equivalent:
       (express-message-popup content))
     (setq message-log-max nil)
     (cond
-      ((numberp seconds)
-       (setq express-message-seconds seconds))
-      ((not (null seconds))
-       (setq express-message-seconds 0)))
+     ((numberp seconds)
+      (setq express-message-seconds seconds))
+     ((not (null seconds))
+      (setq express-message-seconds 0)))
     (unless (or (eq log 'log-only)
                 (eq notify 'replace-echo)
                 (eq popup 'replace-echo))
       (unless (stringp content)
-        (callf2 format "%s" content))
+        (cl-callf2 format "%s" content))
       (unless nocolor
-        (callf concat colored-content (propertize " " 'display '(space :align-to right-margin)))
-        (callf string-utils-propertize-fillin colored-content 'face (append (face-attr-construct 'default)
-                                                                            (face-attr-construct express-face))))
+        (cl-callf concat colored-content (propertize " " 'display '(space :align-to right-margin)))
+        (cl-callf string-utils-propertize-fillin colored-content 'face (append (face-attr-construct 'default)
+                                                                               (face-attr-construct express-face))))
       (if (and (numberp express-message-seconds)
                (> express-message-seconds 0))
           (express-message-temp colored-content)
@@ -584,7 +584,7 @@ The following forms using `message` and `express` are equivalent:
   content)
 
 ;;;###autoload
-(defun* express* (content &key quiet seconds nocolor log notify popup)
+(cl-defun express* (content &key quiet seconds nocolor log notify popup)
   "An alternate version of `express' which uses Common Lisp semantics.
 
 CONTENT, QUIET, SECONDS, NOCOLOR, LOG, NOTIFY, and POPUP are as
@@ -599,7 +599,7 @@ Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(express--with-fset 'message 'express-message-logonly
-     ,@body))
+    ,@body))
 
 ;;;###autoload
 (defmacro express-with-message-nolog (&rest body)
@@ -609,7 +609,7 @@ Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(express--with-fset 'message 'express-message-nolog
-     ,@body))
+    ,@body))
 
 ;;;###autoload
 (defmacro express-with-message-highlight (&rest body)
@@ -619,7 +619,7 @@ Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(express--with-fset 'message 'express-message-highlight
-     ,@body))
+    ,@body))
 
 ;;;###autoload
 (defmacro express-with-message-notify (&rest body)
@@ -632,7 +632,7 @@ Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(express--with-fset 'message 'express-message-notify
-     ,@body))
+    ,@body))
 
 ;;;###autoload
 (defmacro express-with-message-popup (&rest body)
@@ -644,7 +644,7 @@ Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(express--with-fset 'message 'express-message-popup
-     ,@body))
+    ,@body))
 
 ;;;###autoload
 (defmacro express-with-message-insert (&rest body)
@@ -654,7 +654,7 @@ Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(express--with-fset 'message 'express-message-insert
-     ,@body))
+    ,@body))
 
 ;;;###autoload
 (defmacro express-with-message-string (&rest body)
@@ -665,13 +665,13 @@ Accumulated message output is returned.
 Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
-  (let ((output (gensym "--with-message-string--"))
-        (capfun (gensym "--with-message-func--")))
+  (let ((output (cl-gensym "--with-message-string--"))
+        (capfun (cl-gensym "--with-message-func--")))
     `(let ((,output ""))
        (defun ,capfun (&rest args)
-         (callf concat ,output (apply 'express-message-string args)))
+         (cl-callf concat ,output (apply 'express-message-string args)))
        (express--with-fset 'message (function ,capfun)
-         ,@body)
+                           ,@body)
        ,output)))
 
 ;;;###autoload
@@ -682,7 +682,7 @@ Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(express--with-fset 'message 'express-message-temp
-     ,@body))
+    ,@body))
 
 ;;;###autoload
 (defmacro express-with-message-noformat (&rest body)
@@ -694,7 +694,7 @@ Note that since `message' is a subr, only calls to `message' from
 Lisp will be affected."
   (declare (indent 0) (debug t))
   `(express--with-fset 'message 'express-message-noformat
-     ,@body))
+    ,@body))
 
 (provide 'express)
 
@@ -710,7 +710,7 @@ Lisp will be affected."
 ;; End:
 ;;
 ;; LocalWords: noformat logonly nolog flet'able NOCOLOR nocolor fsets
-;; LocalWords: flet todochiku ARGS args callf
+;; LocalWords: flet todochiku ARGS args cl-callf
 ;;
 
 ;;; express.el ends here
