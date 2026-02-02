@@ -1,4 +1,4 @@
-;;; express.el --- Alternatives to `message'
+;;; express.el --- Alternatives to `message' -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (c) 2012-13 Roland Walker
 ;;
